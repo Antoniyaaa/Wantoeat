@@ -1,0 +1,25 @@
+﻿@model Wantoeat.Web.Areas.Administration.ViewModels.Dashboard.IndexViewModel
+@{
+    this.ViewData["Title"] = "Admin dashboard";
+}
+
+<h1>@this.ViewData["Title"]</h1>
+<br />
+<div class="container" mt-2>
+    <div class="row">
+        <div class="col-3">
+            <a asp-controller="Recipes" asp-action="Create" class="btn btn-light btn-lg">Create Recipe</a>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Ingredients" asp-action="Create" class="btn btn-light btn-lg">Create Ingredient</a>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Ingredients" asp-action="Create" class="btn btn-light btn-lg">Create Category</a>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Ingredients" asp-action="Create" class="btn btn-light btn-lg">Create Cooking time</a>
+        </div>
+    </div>
+</div>
+<br />
+Settings: @this.Model.SettingsCount

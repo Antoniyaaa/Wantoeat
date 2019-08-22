@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Wantoeat.Web.ViewModels.Allergens.AllergenSimpleViewModel>
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<h1>Allergens</h1>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="card-deck col-md-2 mb-4">
+            <div class="card">
+                <a asp-controller="Allergens" asp-action="Details" asp-route-id="@item.Id">
+                    <img class="card-img-top" src="@Url.Content(item.ImagePath)">
+                </a>
+            </div>
+        </div>
+    }
+</div>
+<div class="row">
+    <p class="font-weight-light mx-auto">Allergen descriptions: www.good.gov.uk. Allergen images: www.nutritics.com.</p>
+</div>

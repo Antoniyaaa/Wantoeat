@@ -1,0 +1,98 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeCreateInputModel
+@using Wantoeat.Web.ViewModels.Ingredinets
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<h1 class="ml-3">Create Recipe</h1>
+<br />
+<div class="container" mt-2>
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CookingTimeId" class="control-label">Select cooking time:</label>
+                    <select asp-for="CookingTimeId" class="form-control" asp-items="@Model.CookingTimes" size="5"></select>
+                    <span asp-validation-for="CookingTimeId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label">Select category:</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="@Model.Categories" size="5"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label"></label>
+                    <input asp-for="ImageFile" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-1">
+            </div>
+            <div class="form-group col-md-7">
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="19"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="container" mt-2>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <select class="form-control text-primary" id="type" asp-for="RecipeIngredientName">
+                        @foreach (var type in (IEnumerable<RecipeCreateIngredientViewModel>)this.ViewData["ingredients"])
+                        {
+                            <option value="@type.Name">@type.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input type="text" asp-for="RecipeIngredientQuantity">
+            <button class="add">Add</button>
+            <button class="remove">remove</button>
+            <div id="new_chq"></div>
+            <input type="hidden" value="1" id="total_chq">
+        </div>
+        <div class="container" mt-2>
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+$('.add').on('click', add);
+$('.remove').on('click', remove);
+
+function add() {
+  var new_chq_no = parseInt($('#total_chq').val()) + 1;
+  var new_input = "<input type='text' id='new_" + new_chq_no + "'>";
+
+  $('#new_chq').append(new_input);
+
+  $('#total_chq').val(new_chq_no);
+}
+
+function remove() {
+  var last_chq_no = $('#total_chq').val();
+
+  if (last_chq_no > 1) {
+    $('#new_' + last_chq_no).remove();
+    $('#total_chq').val(last_chq_no - 1);
+  }
+}
+</script>

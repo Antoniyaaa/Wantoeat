@@ -1,0 +1,38 @@
+﻿@model Wantoeat.Web.ViewModels.Allergens.AllergenDetailViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div class="container">
+    <div class="row">
+        <h1 class="mx-auto">@Model.Name</h1>
+    </div>
+    <div class="row border rounded">
+        <p class="font-weight-normal ml-3">@Model.Description</p>
+    </div>
+    <br />
+    @if (Model.IngredientAllergens.Any())
+    {
+        <div class="row">
+            <p class="font-weight-bold">Ingredients containing this allergen:</p>
+        </div>
+        <div class="row">
+            @foreach (var item in @Model.IngredientAllergens)
+            {
+                <div class="card-deck col-md-4 justify-content-md-center mb-4">
+                    <div class="card">
+                        <a asp-controller="Ingredients" asp-action="Details" asp-route-id="@item.Id">
+                            <img class="card-img-top" src="@Url.Content(item.ImagePath)">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">@item.Name</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

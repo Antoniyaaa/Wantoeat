@@ -1,0 +1,20 @@
+﻿@model Wantoeat.Web.ViewModels.Search.SearchByIngredientsInputModel
+
+@{
+    ViewData["Title"] = "SearchByIngredients";
+}
+
+<h1>SearchByIngredients</h1>
+<form asp-action="SearchByIngredients" asp-controller="Search" method="get">
+    @for (var i = 0; i < @Model.Ingredients.Count(); i++)
+    {
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="selected" value="@Model.Ingredients[i].Id">
+            <label class="form-check-label" for="inlineCheckbox1">
+                <img src="@Url.Content(Model.Ingredients[i].ImagePath)" asp-append-version="true" width="300" height="200">
+            </label>
+        </div>
+    }
+    <button type="submit" name="ingredientsFromUser">Filtrer</button>
+</form>
+

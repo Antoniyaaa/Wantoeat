@@ -1,0 +1,87 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeDetailViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container" mt-5>
+    <form asp-action="Details" method="get">
+        <div class="row justify-content-md-center mb-5">
+            <h1>@Model.Name</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Url.Content(Model.ImagePath)" class="img-thumbnail">
+                @if (Model.RecipeAllergens.Any())
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-4 text-center">
+                            <h5>Allergens:</h5>
+                            @foreach (var item in Model.RecipeAllergens)
+                            {
+                                <li class="text-left">
+                                    <a asp-controller="Allergens" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                </li>
+                            }
+                        </div>
+                        <div class="col text-left">
+                            <h5>Category:</h5>
+                            <a asp-controller="Categories" asp-action="Details" asp-route-id="@Model.CategoryId" class="text-left">@Model.CategoryName</a>
+                        </div>
+                        <div class="col text-left">
+                            <h5>Cooking time:</h5>
+                            <p class="text-left">@Model.CookingTimeName</p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-5">
+                <div class="mb-3">
+                    <p class="text-justify">@Model.Description</p>
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Ingredients</th>
+                                    <th scope="col">Quantities</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RecipeIngredient)
+                                {
+                                    <tr>
+                                        <td align="left"><a asp-controller="Ingredients" asp-action="Details" asp-route-id="@item.IngredientId">@item.IngredientName</a></td>
+                                        <td align="center">@item.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row justify-content-md-center mt-5">
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Recipes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Recipes" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+        </div>
+    }
+    <div class="col-md-2 text-center">
+        <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
+    </div>
+
+</div>

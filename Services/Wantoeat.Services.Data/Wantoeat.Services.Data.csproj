@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Wantoeat.Data.Common\Wantoeat.Data.Common.csproj" />
+    <ProjectReference Include="..\..\Data\Wantoeat.Data.Models\Wantoeat.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\Wantoeat.Data\Wantoeat.Data.csproj" />
+    <ProjectReference Include="..\..\Web\Wantoeat.Web.ViewModels\Wantoeat.Web.ViewModels.csproj" />
+    <ProjectReference Include="..\Wantoeat.Services.Mapping\Wantoeat.Services.Mapping.csproj" />
+  </ItemGroup>
+
+</Project>

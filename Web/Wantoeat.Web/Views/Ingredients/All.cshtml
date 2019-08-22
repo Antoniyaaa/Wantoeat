@@ -1,0 +1,23 @@
+﻿@model List<Wantoeat.Web.ViewModels.Ingredients.IngredientSimpleViewModel>
+
+@{
+    this.ViewData["Title"] = "All";
+}
+
+<h1>All ingredients</h1>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="card-deck col-md-4 justify-content-md-center mb-4">
+            <div class="card">
+                <a asp-controller="Ingredients" asp-action="Details" asp-route-id="@item.Id">
+                    <img class="card-img-top" src="@Url.Content(item.ImagePath)">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@item.Name</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+</div>

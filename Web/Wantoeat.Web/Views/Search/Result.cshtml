@@ -1,0 +1,24 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeAllViewModel
+
+@{
+    this.ViewData["Title"] = "Result";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var recipe in Model.Recipes)
+        {
+            <div class="col-sm">
+                <div class="thumbnail">
+                    <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipe.Id">
+                        <img src="@Url.Content(recipe.ImagePath)" asp-append-version="true" width="300" height="200">
+                        <div class="caption">
+                            @recipe.Name
+                        </div>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

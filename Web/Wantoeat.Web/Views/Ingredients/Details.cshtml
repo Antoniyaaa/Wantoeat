@@ -1,0 +1,55 @@
+﻿@model Wantoeat.Web.ViewModels.Ingredients.IngredientDetailViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container" mt-2>
+    <form asp-action="Details" method="get">
+        <div class="row justify-content-md-center mb-3">
+            <h1>@Model.Name</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Url.Content(Model.ImagePath)" class="img-thumbnail">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-5">
+                <p class="text-justify">@Model.Description</p>
+            </div>
+        </div>
+        @if (Model.IngredientAllergens.Any())
+        {
+            <div class="row mt-3">
+                <div class="col-md-4 text-center">
+                    <h5>Allergens:</h5>
+                    @foreach (var item in Model.IngredientAllergens)
+                    {
+                        <li class="text-left">
+                            <a asp-controller="Allergens" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                        </li>
+                    }
+                </div>
+            </div>
+        }
+    </form>
+</div>
+<div class="row justify-content-md-center mt-5">
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+        </div>
+    }
+    <div class="col-md-2 text-center">
+        <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
+    </div>
+
+</div>
