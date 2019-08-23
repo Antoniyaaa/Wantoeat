@@ -8,6 +8,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using Wantoeat.Data;
+    using Wantoeat.Data.Models;
 
     public class CookingTimeService : ICookingTimeService
     {
@@ -30,5 +31,11 @@
 
             return cookingTimes;
         }
+
+        public IQueryable<CookingTime> GetAll()
+        {
+            return this.dbContext.CookingTimes;
+        }
+
     }
 }

@@ -5,6 +5,7 @@
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Allergens;
+    using Wantoeat.Web.ViewModels.Recipes;
 
     public class IngredientDetailViewModel : IMapFrom<Ingredient>
     {
@@ -17,5 +18,8 @@
         public ICollection<AllergenSimpleViewModel> IngredientAllergens { get; set; }
 
         public string ImagePath { get; set; }
+
+        public List<RecipeSimpleViewModel> RecipeIngredients { get; set; }
+
     }
 }

@@ -10,7 +10,7 @@
 
     public interface ICategoryService
     {
-        IQueryable<Category> All();
+        IQueryable<Category> GetAll();
 
         Task<List<SelectListItem>> AllToSelectListItems();
 

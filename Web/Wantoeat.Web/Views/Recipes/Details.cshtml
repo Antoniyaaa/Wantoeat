@@ -1,4 +1,11 @@
 ﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeDetailViewModel
+@using Wantoeat.Common
+@using Wantoeat.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 
 @{
     ViewData["Title"] = "Details";
@@ -67,21 +74,52 @@
         </div>
     </form>
 </div>
+@if (Model.Comments.Any())
+{
+    <h6>Comments: </h6>
+    <div class="row">
+        @foreach (var item in Model.Comments)
+        {
+
+            @if (item.IsPrivate == true && item.ApplicationUserUserName != this.User.Identity.Name)
+            {
+                break;
+            }
+
+            <div class="card w-20">
+                <div class="card-body">
+                    <p class="card-text">@item.Content</p>
+                    <p class="card-title">Autor: @item.ApplicationUserUserName</p>
+                    @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                    {
+                        <a asp-area="Administration" asp-controller="Comments" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary">Delete</a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
 <div class="row justify-content-md-center mt-5">
-    @if (User.IsInRole("Administrator"))
-    {
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
-        </div>
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Recipes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
-        </div>
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Recipes" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
-        </div>
-    }
     <div class="col-md-2 text-center">
         <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
     </div>
 
+    @if (this.SignInManager.IsSignedIn(this.User))
+    {
+        <div class="col-md-2 text-center">
+            <a asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Add comment</a>
+        </div>
+        if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+        {
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Recipes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Recipes" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+            </div>
+        }
+    }
 </div>

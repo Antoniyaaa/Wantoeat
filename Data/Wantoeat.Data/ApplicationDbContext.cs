@@ -36,7 +36,11 @@
 
         public DbSet<IngredientAllergen> IngredientAllergen { get; set; }
 
+        public DbSet<ApplicationUserFavoriteRecipes> ApplicationUserFavoriteRecipes { get; set; }
+
         public DbSet<Recipe> Recipes { get; set; }
+
+        public DbSet<Comment> Comments { get; set; }
 
         public DbSet<RecipeAllergen> RecipeAllergen { get; set; }
 
@@ -156,6 +160,22 @@
                 .WithMany(i => i.IngredientAllergens)
                 .HasForeignKey(a => a.AllergenId);
 
+            // Recipes & Users
+            builder.Entity<ApplicationUserFavoriteRecipes>()
+                .HasKey(ra => new { ra.ApplicationUserId, ra.RecipeId });
+
+            builder.Entity<ApplicationUserFavoriteRecipes>()
+                .HasOne(ri => ri.ApplicationUser)
+                .WithMany(r => r.FavouriteRecipes)
+                .HasForeignKey(r => r.ApplicationUserId);
+
+            builder.Entity<ApplicationUserFavoriteRecipes>()
+                .HasOne(ri => ri.Recipe)
+                .WithMany(r => r.FavouriteRecipes)
+                .HasForeignKey(r => r.RecipeId);
+
+
+
             // one to many
             builder.Entity<Recipe>()
                 .HasOne<Category>(r => r.Category)
@@ -166,6 +186,16 @@
                 .HasOne<CookingTime>(r => r.CookingTime)
                 .WithMany(c => c.Recipes)
                 .HasForeignKey(r => r.CookingTimeId);
+
+            builder.Entity<Comment>()
+                .HasOne<ApplicationUser>(r => r.User)
+                .WithMany(c => c.Comments)
+                .HasForeignKey(r => r.UserId);
+
+            builder.Entity<Comment>()
+                .HasOne<Recipe>(r => r.Recipe)
+                .WithMany(c => c.Comments)
+                .HasForeignKey(r => r.RecipeId);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)

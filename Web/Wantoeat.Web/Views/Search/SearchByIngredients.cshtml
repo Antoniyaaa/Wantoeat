@@ -4,17 +4,31 @@
     ViewData["Title"] = "SearchByIngredients";
 }
 
-<h1>SearchByIngredients</h1>
-<form asp-action="SearchByIngredients" asp-controller="Search" method="get">
-    @for (var i = 0; i < @Model.Ingredients.Count(); i++)
-    {
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="selected" value="@Model.Ingredients[i].Id">
-            <label class="form-check-label" for="inlineCheckbox1">
-                <img src="@Url.Content(Model.Ingredients[i].ImagePath)" asp-append-version="true" width="300" height="200">
-            </label>
-        </div>
-    }
-    <button type="submit" name="ingredientsFromUser">Filtrer</button>
-</form>
+<!--TODO Make the button move when scrolling-->
 
+
+<h1>Search By Ingredients</h1>
+<form asp-action="SearchByIngredients" asp-controller="Search" method="get">
+    <div class="row mb-5">
+        <div class="mx-auto">
+            <input type="submit" name="ingredientsFromUser" class="btn btn-primary" value="Go"/>
+        </div>
+    </div>
+    <div class="row">
+        @for (var i = 0; i < @Model.Ingredients.Count(); i++)
+        {
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <img class="card-img-top" src="@Url.Content(Model.Ingredients[i].ImagePath)">
+                        <div class="card-body">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check" type="checkbox" name="selected" value="@Model.Ingredients[i].Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</form>

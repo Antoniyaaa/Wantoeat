@@ -227,6 +227,19 @@ namespace Wantoeat.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Wantoeat.Data.Models.ApplicationUserFavoriteRecipes", b =>
+                {
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<int>("RecipeId");
+
+                    b.HasKey("ApplicationUserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("ApplicationUserFavoriteRecipes");
+                });
+
             modelBuilder.Entity("Wantoeat.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -248,6 +261,39 @@ namespace Wantoeat.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Wantoeat.Data.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<bool>("IsPrivate");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<int>("RecipeId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Wantoeat.Data.Models.CookingTime", b =>
@@ -444,6 +490,31 @@ namespace Wantoeat.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Wantoeat.Data.Models.ApplicationUserFavoriteRecipes", b =>
+                {
+                    b.HasOne("Wantoeat.Data.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("FavouriteRecipes")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Wantoeat.Data.Models.Recipe", "Recipe")
+                        .WithMany("FavouriteRecipes")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Wantoeat.Data.Models.Comment", b =>
+                {
+                    b.HasOne("Wantoeat.Data.Models.Recipe", "Recipe")
+                        .WithMany("Comments")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Wantoeat.Data.Models.ApplicationUser", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Wantoeat.Data.Models.IngredientAllergen", b =>

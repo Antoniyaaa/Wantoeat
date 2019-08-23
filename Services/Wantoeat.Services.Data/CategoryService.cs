@@ -19,7 +19,7 @@
             this.dbContext = dbContext;
         }
 
-        public IQueryable<Category> All()
+        public IQueryable<Category> GetAll()
         {
             var categories = this.dbContext.Categories;
 

@@ -1,14 +1,15 @@
 ﻿namespace Wantoeat.Web.ViewModels.Ingredients
 {
-    using AutoMapper;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+
+    using Microsoft.AspNetCore.Http;
+
+    using AutoMapper;
+
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
-    using Wantoeat.Web.ViewModels.Allergens;
     using Wantoeat.Web.ViewModels.ValidationAttributes;
 
     public class IngredientEditInputModel : IMapFrom<Ingredient>, IMapTo<Ingredient>, IHaveCustomMappings

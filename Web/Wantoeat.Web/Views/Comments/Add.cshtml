@@ -1,0 +1,55 @@
+﻿@model Wantoeat.Web.ViewModels.Comments.CommentInputModel
+
+@{
+    ViewData["Title"] = "Add";
+}
+
+<div class="row mb-5 mt-3">
+    <h1 class="mx-auto">Add comment</h1>
+</div>
+<form method="post" asp-controller="Comments" asp-action="Add">
+    <div class="row">
+        <div class="col-md-5 text-center">
+            <input asp-for="RecipeId" class="form-control" type="hidden" />
+            <div class="row justify-content-md-center mb-5">
+                <h1>@Model.Recipe.RecipeName</h1>
+            </div>
+            <div class="mb-3">
+                <p class="text-justify">@Model.Recipe.RecipeDescription</p>
+            </div>
+            <div class="col text-center mb-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Ingredients</th>
+                            <th scope="col">Quantities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in @Model.Recipe.RecipeIngredient)
+                        {
+                            <tr>
+                                <td align="left">@item.IngredientName</td>
+                                <td align="center">@item.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2 text-center">
+        </div>
+        <div class="col-md-5 text-center">
+            <div>
+                <label asp-for="@Model.IsPrivate">Private comment</label>
+                <input type="checkbox" asp-for="IsPrivate" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+    </div>
+</form>

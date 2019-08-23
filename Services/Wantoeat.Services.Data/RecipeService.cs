@@ -9,7 +9,6 @@
 
     using Wantoeat.Data;
     using Wantoeat.Data.Models;
-    using Wantoeat.Services.Data;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Recipes;
 
@@ -29,35 +28,29 @@
             return recipes;
         }
 
-        public Recipe Create(string name, string description, int cookingTimeId, int categoryId, IList<int> ingredients, string imagePath)
+        public async Task<Recipe> CreateAsync(RecipeCreateInputModel model)
         {
-            Recipe recipe = new Recipe
-            {
-                Name = name,
-                Description = description,
-                CookingTimeId = cookingTimeId,
-                CategoryId = categoryId,
-                ImagePath = imagePath,
-            };
+            var recipe = AutoMapper.Mapper.Map<Recipe>(model);
 
-            if (ingredients != null)
+            // TODO Mapping
+            if (model.IngredientNames != null)
             {
-                for (int i = 0; i < ingredients.Count(); i++)
+                for (int i = 0; i < model.IngredientNames.Count(); i++)
                 {
                     RecipeIngredient recipeIngredient = new RecipeIngredient
                     {
-                        RecipeId = recipe.Id,
-                        IngredientId = ingredients[i],
-                        //Quantity = quantities[i],
+                        Recipe = recipe,
+                        Ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]),
+                        Quantity = model.RecipeIngredientQuantity[i],
                     };
 
-                    if (this.dbContext.IngredientAllergen.Any(x => x.IngredientId == ingredients[i] &&
+                    if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == model.IngredientNames[i] &&
                         !recipe.RecipeAllergens.Any(y => y.AllergenId == x.AllergenId)))
                     {
                         RecipeAllergen recipeAllergen = new RecipeAllergen
                         {
-                            RecipeId = recipe.Id,
-                            AllergenId = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == ingredients[i]).Select(x => x.AllergenId).FirstOrDefault()
+                            Recipe = recipe,
+                            Allergen = this.dbContext.IngredientAllergen.Where(x => x.Ingredient.Name == model.IngredientNames[i]).Select(x => x.Allergen).FirstOrDefault()
                         };
                         recipeAllergen = this.dbContext.RecipeAllergen.Add(recipeAllergen).Entity;
                         recipe.RecipeAllergens.Add(recipeAllergen);
@@ -70,81 +63,82 @@
 
             recipe = this.dbContext.Recipes.Add(recipe).Entity;
 
-            this.dbContext.SaveChanges();
+            await this.dbContext.SaveChangesAsync();
 
             return recipe;
         }
 
-        public async Task DeleteByIdAsync(int id)
+        public async Task<Recipe> EditAsync(RecipeEditInputModel model)
+        {
+            // TODO Mapping
+            var recipeFromDb = GetById(model.Id);
+
+            recipeFromDb.Name = model.Name;
+            recipeFromDb.Description = model.Description;
+            recipeFromDb.Category = this.dbContext.Categories.Where(x => x.Name == model.CategoryName).FirstOrDefault();
+            recipeFromDb.CookingTime = this.dbContext.CookingTimes.Where(x => x.Name == model.CookingTimeName).FirstOrDefault();
+            recipeFromDb.ImagePath = model.ImagePath;
+            // TODO Through repository!
+            recipeFromDb.ModifiedOn = DateTime.UtcNow;
+
+            int counter = 0;
+
+            foreach (var item in recipeFromDb.RecipeIngredient)
+            {
+                if (model.Quantity[counter] == null)
+                {
+                    this.dbContext.RecipeIngredient.Remove(item);
+                }
+                else
+                {
+                    item.Quantity = model.Quantity[counter];
+                }
+
+                counter++;
+            }
+
+            for (int i = recipeFromDb.RecipeIngredient.Count(); i < model.IngredientNames.Count(); i++)
+            {
+                RecipeIngredient recipeIngredient = new RecipeIngredient
+                {
+                    Recipe = recipeFromDb,
+                    Ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]),
+                    Quantity = model.Quantity[i],
+                };
+
+                if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == model.IngredientNames[i] &&
+                    !recipeFromDb.RecipeAllergens.Any(y => y.AllergenId == x.AllergenId)))
+                {
+                    RecipeAllergen recipeAllergen = new RecipeAllergen
+                    {
+                        Recipe = recipeFromDb,
+                        Allergen = this.dbContext.IngredientAllergen.Where(x => x.Ingredient.Name == model.IngredientNames[i]).Select(x => x.Allergen).FirstOrDefault()
+                    };
+
+                    recipeAllergen = this.dbContext.RecipeAllergen.Add(recipeAllergen).Entity;
+                    recipeFromDb.RecipeAllergens.Add(recipeAllergen);
+                }
+
+                recipeIngredient = this.dbContext.RecipeIngredient.Add(recipeIngredient).Entity;
+                recipeFromDb.RecipeIngredient.Add(recipeIngredient);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+
+            return recipeFromDb;
+        }
+
+        public async Task<bool> DeleteByIdAsync(int id)
         {
             var recipe = this.GetById(id);
+
+            // TODO Through repository!
             recipe.IsDeleted = true;
             recipe.DeletedOn = DateTime.UtcNow;
 
-            // TODO Go through Repository, so asyn make sence
-            this.dbContext.SaveChanges();
-        }
+            int result = await this.dbContext.SaveChangesAsync();
 
-        public Recipe Edit(int id, string name, string description, int cookingTimeId, int categoryId, IList<int> ingredients, string imagePath)
-        {
-            var recipe = this.GetById(id);
-
-            recipe.Name = name;
-            recipe.Description = description;
-
-            if (cookingTimeId != 0)
-            {
-                recipe.CookingTimeId = cookingTimeId;
-            }
-
-            if (categoryId != 0)
-            {
-                recipe.CategoryId = categoryId;
-            }
-
-            if (imagePath != null)
-            {
-                recipe.ImagePath = imagePath;
-            }
-
-            if (ingredients != null)
-            {
-                var oldIngredients = this.dbContext.RecipeIngredient.Where(x => x.RecipeId == id).ToList();
-                var oldAllergens = this.dbContext.RecipeAllergen.Where(x => x.RecipeId == id).ToList();
-
-                this.dbContext.RemoveRange(oldIngredients);
-                this.dbContext.RemoveRange(oldAllergens);
-
-
-                for (int i = 0; i < ingredients.Count(); i++)
-                {
-                    RecipeIngredient recipeIngredient = new RecipeIngredient
-                    {
-                        RecipeId = recipe.Id,
-                        IngredientId = ingredients[i],
-                    };
-
-                    if (this.dbContext.IngredientAllergen.Any(x => x.IngredientId == ingredients[i] &&
-                        !recipe.RecipeAllergens.Any(y => y.AllergenId == x.AllergenId)))
-                    {
-                        RecipeAllergen recipeAllergen = new RecipeAllergen
-                        {
-                            RecipeId = recipe.Id,
-                            AllergenId = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == ingredients[i]).Select(x => x.AllergenId).FirstOrDefault()
-                        };
-                        recipeAllergen = this.dbContext.RecipeAllergen.Add(recipeAllergen).Entity;
-                        recipe.RecipeAllergens.Add(recipeAllergen);
-                    }
-
-                    recipeIngredient = this.dbContext.RecipeIngredient.Add(recipeIngredient).Entity;
-                    recipe.RecipeIngredient.Add(recipeIngredient);
-                }
-
-            }
-
-            this.dbContext.SaveChanges();
-
-            return recipe;
+            return result > 0;
         }
 
         public IQueryable<RecipeSimpleViewModel> GetAllToSimpleViewModel()
@@ -154,16 +148,39 @@
             return recipes;
         }
 
+        public List<RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>> GetGroups(string sortBy = "category")
+        {
+            var recipes = this.dbContext.Recipes.To<RecipeCategoryAllergenViewModel>();
+
+            if (sortBy == "allergens")
+            {
+                /*var recipesAllegens = recipes.GroupBy(x => x.RecipeAllergens)
+                                    .Select(g =>
+                                    new RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>
+                                    { GroupName = g.Key.Name, Recipes = g.ToList() })
+                                    .ToList();*/
+                return null;
+            }
+            else
+            {
+                var recipesCategories = recipes.GroupBy(x => x.CategoryName)
+                                    .Select(g => 
+                                    new RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>
+                                    { GroupName = g.Key, Recipes = g.ToList() })
+                                    .ToList();
+
+                return recipesCategories;
+            }
+        }
+
         public Recipe GetById(int id)
         {
             var recipe = this.dbContext.Recipes.Where(x => x.Id == id).FirstOrDefault();
-
 
             // TODO are the following g
             recipe.RecipeIngredient = this.dbContext.RecipeIngredient.Where(x => x.RecipeId == recipe.Id)
                 .ToList();
             recipe.RecipeAllergens = this.dbContext.RecipeAllergen.Where(x => x.RecipeId == recipe.Id).ToList();
-
 
             return recipe;
         }
@@ -176,6 +193,17 @@
                 .FirstOrDefaultAsync();
 
             return recipe;
+        }
+
+        public IQueryable<Recipe> GetRecipesByIngredients(int[] ingredientIds)
+        {
+            var recipes = this.dbContext.RecipeIngredient
+                .Where(x => ingredientIds.Contains(x.IngredientId))
+                .GroupBy(x => x.Recipe).Select(y => new { Value = y.Key, Count = y.Count() })
+                .OrderByDescending(x => x.Count)
+                .Select(x => x.Value);
+
+            return recipes;
         }
     }
 }

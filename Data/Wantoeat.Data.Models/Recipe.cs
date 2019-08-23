@@ -21,13 +21,16 @@ namespace Wantoeat.Data.Models
         public int CookingTimeId { get; set; }
         public virtual CookingTime CookingTime { get; set; }
 
-        // TODO Make multiple categories!?
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
         public virtual ICollection<RecipeIngredient> RecipeIngredient { get; set; }
 
         public virtual ICollection<RecipeAllergen> RecipeAllergens { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<ApplicationUserFavoriteRecipes> FavouriteRecipes { get; set; }
 
         public string ImagePath { get; set; }
     }

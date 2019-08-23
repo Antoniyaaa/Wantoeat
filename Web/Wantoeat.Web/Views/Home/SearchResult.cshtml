@@ -1,0 +1,33 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeAllViewModel
+
+@{
+    this.ViewData["Title"] = "Result";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Your best matches are...</h1>
+</div>
+<h6>
+    Your ingredients:
+    @foreach (var item in @Model.Ingredients)
+    {
+        <p>@item.Name</p>
+    }
+</h6>
+
+<div class="row">
+    @foreach (var item in Model.Recipes)
+    {
+        <div class="card-deck col-md-4 justify-content-md-center mb-4">
+            <div class="card">
+                <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.Id">
+                    <img class="card-img-top" src="@Url.Content(item.ImagePath)">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@item.Name</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+</div>
+

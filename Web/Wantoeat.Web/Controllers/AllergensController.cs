@@ -8,7 +8,7 @@
     using Wantoeat.Services.Data;
     using Wantoeat.Web.ViewModels.Allergens;
 
-    public class AllergensController : Controller
+    public class AllergensController : BaseController
     {
         private readonly IAllergensService allergensService;
 

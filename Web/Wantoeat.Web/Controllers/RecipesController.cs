@@ -8,7 +8,7 @@
     using Wantoeat.Services.Data;
     using Wantoeat.Web.ViewModels.Recipes;
 
-    public class RecipesController : Controller
+    public class RecipesController : BaseController
     {
         private readonly IRecipeService recipesService;
 

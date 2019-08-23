@@ -108,11 +108,11 @@
             services.AddTransient<IAllergensService, AllergensService>();
             services.AddTransient<IIngredientService, IngredientsService>();
             services.AddTransient<IRecipeService, RecipeService>();
-            services.AddTransient<ISearchService, SearchService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<ICookingTimeService, CookingTimeService>();
             services.AddTransient<ICategoryService, CategoryService>();
-
+            services.AddTransient<ICommentsService, CommentsService>();
+            services.AddTransient<IFavoritesService, FavoritesService>();
 
             // TODO: Check if correct, uplaod files:
             services.AddSingleton<IFileProvider>(

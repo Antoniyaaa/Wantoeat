@@ -1,17 +1,16 @@
 ﻿namespace Wantoeat.Web.Areas.Administration.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc.Rendering;
 
-    using Wantoeat.Services.Data;
-    using Wantoeat.Services;
-    using Wantoeat.Services.Mapping;
-    using Wantoeat.Web.ViewModels.Recipes;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Wantoeat.Web.ViewModels.Ingredinets;
+
+    using Wantoeat.Services;
+    using Wantoeat.Services.Data;
+    using Wantoeat.Web.ViewModels.Comments;
+    using Wantoeat.Web.ViewModels.Ingredients;
+    using Wantoeat.Web.ViewModels.Recipes;
 
     public class RecipesController : AdministrationController
     {
@@ -45,112 +44,103 @@
             }).OrderBy(x => x.Name)
             .ToList();
 
-            RecipeCreateInputModel viewModel = new RecipeCreateInputModel
+            RecipeCreateInputModel model = new RecipeCreateInputModel
             {
                 Categories = categories,
                 CookingTimes = cookingTimes,
             };
 
-            return this.View(viewModel);
+            return this.View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RecipeCreateInputModel viewModel)
+        public async Task<IActionResult> Create(RecipeCreateInputModel model)
         {
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.View(viewModel);
+                var allIngredients = await this.ingredientService.GetAll().ToListAsync();
+
+                this.ViewData["ingredients"] = allIngredients.Select(item => new RecipeCreateIngredientViewModel
+                {
+                    Name = item.Name
+
+                }).OrderBy(x => x.Name)
+                .ToList();
+
+                return this.View(model);
             }
 
-            if (viewModel.ImageFile != null && viewModel.ImageFile.Length != 0)
+            if (model.RecipeIngredientQuantity.Count() != model.IngredientNames.Count())
             {
-                viewModel.ImagePath = this.imageService.UploadImage(viewModel.ImageFile, viewModel.Name);
+                // TODO ValidationAttribute or ErrorMessage
             }
 
-            var recipe = this.recipeService.Create(viewModel.Name, viewModel.Description, viewModel.CookingTimeId, 
-                 viewModel.CategoryId, viewModel.IngredientIds, viewModel.ImagePath);
+            if (model.ImageFile != null && model.ImageFile.Length != 0)
+            {
+                model.ImagePath = this.imageService.UploadImage(model.ImageFile, model.Name);
+            }
 
-             return this.RedirectToAction("Details", new { id = recipe.Id });
-            return this.View();
+            var recipe = await this.recipeService.CreateAsync(model);
+
+            return this.RedirectToAction("Details", new { id = recipe.Id });
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var recipe = this.recipeService.GetById(id);
-            // TODO Extract method or similar or make Service...
-            var ingredients = this.ingredientService.All();
-            var ingredientsList = ingredients.Select(x => new SelectListItem
+            var unusedIngredients = await this.ingredientService.GetAllUnused(id).ToListAsync();
+
+            this.ViewData["ingredients"] = unusedIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
             {
-                Value = x.Id.ToString(),
-                Text = x.Name,
-            }).OrderBy(x => x.Text)
-                                              .ToList();
+                Name = ingredient.Name
 
-            var addedIngredients = this.ingredientService.GetIngredientsByRecipeId(id);
-            var addedIngredientsList = addedIngredients.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name,
-            }).OrderBy(x => x.Text)
-                                              .ToList();
+            }).OrderBy(x => x.Name)
+            .ToList();
 
-            var unaddedIngredients = ingredients.Where(x => !addedIngredients.Any(y => y.Id == x.Id));
-            var unAddedIngredientsList = unaddedIngredients.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name,
-            }).OrderBy(x => x.Text).ToList();
+            var allCookingTimes = await this.cookingTimeService.GetAll().ToListAsync();
+            this.ViewData["cookingTimes"] = allCookingTimes.Select(item => item.Name).ToList();
 
+            var allCategories = await this.categoryService.GetAll().ToListAsync();
+            this.ViewData["categories"] = allCategories.Select(item => item.Name).ToList();
 
-            var cookingTimes = this.cookingTimeService.All();
-            var cookingTimesList = cookingTimes.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name,
-            })
-                                              .ToList();
+            var model = await this.recipeService.GetViewModelByIdAsync<RecipeEditInputModel>(id);
 
-            var categories = this.categoryService.All();
-            var categoriesList = categories.Select(x => new SelectListItem
-            {
-                Value = x.Id.ToString(),
-                Text = x.Name,
-            })
-                .OrderBy(x => x.Text)
-                                              .ToList();
-
-            // TODO Add Category Name and Cooking Time
-            var viewModel = new RecipeEditViewModel
-            {
-                Id = recipe.Id,
-                Name = recipe.Name,
-                Description = recipe.Description,
-                Categories = categoriesList,
-                CookingTimes = cookingTimesList,
-                Ingredients = unAddedIngredientsList,
-                AddedIngredients = addedIngredientsList,
-                ImagePath = recipe.ImagePath,
-            };
-
-            return this.View(viewModel);*/
-            return this.View();
+            return this.View(model);
         }
 
-        /*[HttpPost]
-        public async Task<IActionResult> Edit(RecipeEditViewModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> Edit(RecipeEditInputModel model)
         {
             if (!ModelState.IsValid)
             {
-                return this.View(viewModel);
+                var unusedIngredients = await this.ingredientService.GetAllUnused(model.Id).ToListAsync();
+
+                this.ViewData["ingredients"] = unusedIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
+                {
+                    Name = ingredient.Name
+
+                }).OrderBy(x => x.Name)
+                .ToList();
+
+                var allCookingTimes = await this.cookingTimeService.GetAll().ToListAsync();
+                this.ViewData["cookingTimes"] = allCookingTimes.Select(item => item.Name).ToList();
+
+                var allCategories = await this.categoryService.GetAll().ToListAsync();
+                this.ViewData["categories"] = allCategories.Select(item => item.Name).ToList();
+
+                return this.View(model);
             }
 
-            if (viewModel.NewImageFile != null && viewModel.NewImageFile.Length != 0)
+            if (model.Quantity.Count() != model.IngredientNames.Count())
             {
-                viewModel.ImagePath = this.imageService.ReplaceImage(viewModel.NewImageFile, viewModel.ImagePath, viewModel.Name);
+                // TODO ValidationAttribute or ErrorMessage
             }
 
-            var recipe = this.recipeService.Edit(viewModel.Id, viewModel.Name, viewModel.Description, viewModel.CookingTimeId,
-                viewModel.CategoryId, viewModel.IngredientIds, viewModel.ImagePath);
+            if (model.NewImageFile != null && model.NewImageFile.Length != 0)
+            {
+                model.ImagePath = this.imageService.UploadImage(model.NewImageFile, model.Name);
+            }
+
+            var recipe = await this.recipeService.EditAsync(model);
 
             return this.RedirectToAction("Details", new { id = recipe.Id });
         }
@@ -167,13 +157,7 @@
         {
             await this.recipeService.DeleteByIdAsync(viewModel.Id);
 
-            return this.RedirectToAction("Details", new { id = 1 });
-        }*/
-
-
-            /*private List<SelectListItem> CreateSelectListItemsList<T>(List<T> items)
-            {
-
-            }*/
+            return this.RedirectToAction("All");
         }
     }
+}

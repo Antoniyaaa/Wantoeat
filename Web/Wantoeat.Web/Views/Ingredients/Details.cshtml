@@ -35,21 +35,43 @@
         }
     </form>
 </div>
-<div class="row justify-content-md-center mt-5">
-    @if (User.IsInRole("Administrator"))
+<div class="container" mt-5>
+    @if (Model.RecipeIngredients.Any())
     {
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+        <div class="row">
+            <p class="font-weight-bold">Recipes with this ingredient:</p>
         </div>
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
-        </div>
-        <div class="col-md-2 text-center">
-            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+        <div class="row">
+            @foreach (var item in @Model.RecipeIngredients)
+            {<div class="col small">
+                        <div class="card">
+                            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.Id">
+                                <img class="card-img-top" src="@Url.Content(item.ImagePath)">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@item.Name</h5>
+                                </div>
+                            </a>
+                    </div>
+                </div>
+            }
         </div>
     }
-    <div class="col-md-2 text-center">
-        <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
     </div>
+    <div class="row justify-content-md-center mt-5">
+        @if (User.IsInRole("Administrator"))
+        {
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
+            </div>
+            <div class="col-md-2 text-center">
+                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+            </div>
+        }
+        <div class="col-md-2 text-center">
+            <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
+        </div>
 
-</div>
+    </div>

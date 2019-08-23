@@ -17,6 +17,10 @@
 
         IQueryable<Ingredient> GetAll();
 
+        IQueryable<Ingredient> GetAllUnused(int recipeId);
+
+        IQueryable<RecipeCreateIngredientViewModel> GetAllNamesByIds(int[] ids);
+
         IList<Ingredient> GetIngredientsByRecipeId(int recipeId);
 
         Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id);

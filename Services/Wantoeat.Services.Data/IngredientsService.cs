@@ -29,6 +29,19 @@
             return ingredients;
         }
 
+        public IQueryable<Ingredient> GetAllUnused(int recipeId)
+        {
+            // TODO Refractor
+            var ingredients = this.dbContext.Ingredients;
+            var ingredientsRecipe = this.dbContext.RecipeIngredient
+                                    .Where(x => x.RecipeId == recipeId)
+                                    .Select(x => x.Ingredient);
+            var result = ingredients.Where(x => !ingredientsRecipe.Any(x2 => x2.Id == x.Id));
+
+            return result;
+        }
+
+
         public async Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id)
         {
             var ingredient = await this.dbContext.Ingredients
@@ -123,11 +136,7 @@
 
             ingredientFromDb.Name = model.Name;
             ingredientFromDb.Description = model.Description;
-
-            if (model.ImagePath != null)
-            {
-                ingredientFromDb.ImagePath = model.ImagePath;
-            }
+            ingredientFromDb.ImagePath = model.ImagePath;
 
             var oldallergens = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == model.Id).ToList();
 
@@ -160,6 +169,15 @@
             return ingredientFromDb;
         }
 
+        public IQueryable<RecipeCreateIngredientViewModel> GetAllNamesByIds(int[] ids)
+        {
+            var ingredients = this.dbContext.Ingredients
+                .Where(x => ids.Contains(x.Id))
+                .To<RecipeCreateIngredientViewModel>();
+
+            return ingredients;
+        }
+
         private Ingredient GetById(int id)
         {
             var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Id == id);
@@ -171,6 +189,5 @@
 
             return ingredient;
         }
-
     }
 }
