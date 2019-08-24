@@ -6,7 +6,7 @@
 
     public interface ICommentsService
     {
-        Task<bool> Add(CommentInputModel inputModel);
+        Task<bool> AddAsync(CommentInputModel inputModel);
 
         Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id);
 

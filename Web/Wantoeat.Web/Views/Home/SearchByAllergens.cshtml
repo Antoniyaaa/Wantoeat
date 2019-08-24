@@ -1,0 +1,36 @@
+﻿@model List<Wantoeat.Web.ViewModels.Allergens.AllergenSimpleViewModel>
+
+@{
+    ViewData["Title"] = "SearchByallergens";
+}
+
+<!--TODO Make the button move when scrolling-->
+
+
+<div>
+    <h1 class="display-4">Mark what allergy you want to escape</h1>
+</div>
+<form asp-action="SearchByAllergens" asp-controller="Home" method="get">
+    <div class="row mb-5">
+        <div class="mx-auto">
+            <input type="submit" name="allergens" class="btn btn-primary" value="Go" />
+        </div>
+    </div>
+    <div class="row">
+        @for (var i = 0; i < @Model.Count(); i++)
+        {
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <img class="card-img-top" src="@Url.Content(Model[i].ImagePath)">
+                        <div class="card-body">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check" type="checkbox" name="selected" value="@Model[i].Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</form>

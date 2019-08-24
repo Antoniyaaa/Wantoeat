@@ -13,7 +13,7 @@
 
         Task<Recipe> EditAsync(RecipeEditInputModel model);
 
-        IQueryable<RecipeSimpleViewModel> GetAllToSimpleViewModel();
+        IQueryable<TViewModel> GetAllToViewModel<TViewModel>();
 
         List<RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>> GetGroups(string sortBy = "category");
 
@@ -23,8 +23,10 @@
 
         Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id);
 
-        IQueryable<Recipe> All();
-
         IQueryable<Recipe> GetRecipesByIngredients(int[] ingredientIds);
+
+        IQueryable<Recipe> GetByCategory(string criteria = null);
+
+        IQueryable<Recipe> GetAllNonContainingAllergen(int[] allergenIds);
     }
 }

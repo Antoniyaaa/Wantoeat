@@ -7,13 +7,32 @@
 <div class="text-center mb-5">
     <h1 class="display-4">Your best matches are...</h1>
 </div>
-<h6>
-    Your ingredients:
-    @foreach (var item in @Model.Ingredients)
+
+@{
+    @if (Model.Ingredients.Count() != 0)
     {
-        <p>@item.Name</p>
+        <h6>
+            Your ingredients:
+            @foreach (var item in @Model.Ingredients)
+            {
+                <p>@item.Name</p>
+            }
+
+        </h6>
     }
-</h6>
+    else
+    {
+        <h6>
+            Allergens to avoid:
+            @foreach (var item in @Model.Allergens)
+            {
+                <p>@item.Name</p>
+            }
+
+        </h6>
+    }
+
+}
 
 <div class="row">
     @foreach (var item in Model.Recipes)

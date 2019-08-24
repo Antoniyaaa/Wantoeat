@@ -29,6 +29,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Wantoeat.Data\Wantoeat.Data.csproj" />
     <ProjectReference Include="..\..\Services\Wantoeat.Services.Data\Wantoeat.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Services\Wantoeat.Services.Mapping\Wantoeat.Services.Mapping.csproj" />
+    <ProjectReference Include="..\..\Services\Wantoeat.Services\Wantoeat.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -26,7 +26,7 @@
 
         public async Task<IActionResult> All()
         {
-            var ingredients = await this.ingredientService.GetAllToSimpleViewModel().ToListAsync();
+            var ingredients = await this.ingredientService.GetAllToViewModel<IngredientSimpleViewModel>().ToListAsync();
 
             return this.View(ingredients);
         }

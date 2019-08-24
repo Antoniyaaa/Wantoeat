@@ -21,12 +21,18 @@
         {
             var viewModel = await this.allergensService.GetViewModelByIdAsync<AllergenDetailViewModel>(id);
 
+            if (viewModel == null)
+            {
+                // TODO: Error Handling
+                return this.Redirect("/");
+            }
+
             return this.View(viewModel);
         }
 
         public async Task<IActionResult> All()
         {
-            var allergens = await this.allergensService.GetAllToSimpleViewModel().ToListAsync();
+            var allergens = this.allergensService.GetAllToViewModel<AllergenSimpleViewModel>();
 
             return this.View(allergens);
         }

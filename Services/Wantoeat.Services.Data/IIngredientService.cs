@@ -13,25 +13,14 @@
 
         Task<Ingredient> EditAsync(IngredientEditInputModel model);
 
-        IQueryable<IngredientSimpleViewModel> GetAllToSimpleViewModel();
+        IQueryable<TViewModel> GetAllToViewModel<TViewModel>();
 
-        IQueryable<Ingredient> GetAll();
+        IQueryable<TViewModel> GetAllToViewModelByIds<TViewModel>(int[] ids);
 
         IQueryable<Ingredient> GetAllUnused(int recipeId);
-
-        IQueryable<RecipeCreateIngredientViewModel> GetAllNamesByIds(int[] ids);
-
-        IList<Ingredient> GetIngredientsByRecipeId(int recipeId);
 
         Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id);
 
         Task<bool> DeleteByIdAsync(int id);
-
-        // Do I need this?
-        ICollection<IngredientSimpleViewModel> GetIngredientsByAllergenId(int allergenId);
-
-        IList<IngredientForRecipeViewModel> GetIngredientsVMByRecipeId(int recipeId);
-
-        IList<string> GetQuantitiesByRecipeId(int recipeId);
     }
 }

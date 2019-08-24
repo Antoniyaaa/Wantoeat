@@ -35,14 +35,7 @@
             var cookingTimes = await this.cookingTimeService.AllToSelectListItems();
             var categories = await this.categoryService.AllToSelectListItems();
 
-            var allIngredients = await this.ingredientService.GetAll().ToListAsync();
-
-            this.ViewData["ingredients"] = allIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
-            {
-                Name = ingredient.Name
-
-            }).OrderBy(x => x.Name)
-            .ToList();
+            this.ViewData["ingredients"] = await this.ingredientService.GetAllToViewModel<RecipeCreateIngredientViewModel>().ToListAsync();
 
             RecipeCreateInputModel model = new RecipeCreateInputModel
             {
@@ -58,14 +51,7 @@
         {
             if (!ModelState.IsValid)
             {
-                var allIngredients = await this.ingredientService.GetAll().ToListAsync();
-
-                this.ViewData["ingredients"] = allIngredients.Select(item => new RecipeCreateIngredientViewModel
-                {
-                    Name = item.Name
-
-                }).OrderBy(x => x.Name)
-                .ToList();
+                this.ViewData["ingredients"] = await this.ingredientService.GetAllToViewModel<RecipeCreateIngredientViewModel>().ToListAsync();
 
                 return this.View(model);
             }

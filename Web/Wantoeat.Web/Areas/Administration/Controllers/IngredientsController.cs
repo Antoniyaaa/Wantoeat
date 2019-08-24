@@ -31,7 +31,7 @@
 
         public async Task<IActionResult> Create()
         {
-            var allergens = await this.allergensService.AllToSelectListItems();
+            var allergens = this.allergensService.AllToSelectListItems().ToList();
 
             var model = new IngredientCreateInputModel { Allergens = allergens };
 
@@ -45,7 +45,7 @@
             {
                 if (model.AllergenIds == null)
                 {
-                    var allergens = await this.allergensService.AllToSelectListItems();
+                    var allergens = this.allergensService.AllToSelectListItems().ToList();
                     model.Allergens = allergens;
                 }
 
@@ -66,13 +66,7 @@
         {
             var viewModel = await this.ingredientService.GetViewModelByIdAsync<IngredientEditInputModel>(id);
 
-            var allAllergens = await this.allergensService.GetAll().ToListAsync();
-
-            this.ViewData["allergens"] = allAllergens.Select(allergen => new IngredientCreateAllergenViewModel
-            {
-                Name = allergen.Name
-
-            }).ToList();
+            this.ViewData["allergens"] = this.allergensService.GetAllToViewModel<IngredientCreateAllergenViewModel>();
 
             return this.View(viewModel);
         }
@@ -82,13 +76,7 @@
         {
             if (!ModelState.IsValid)
             {
-                var allAllergens = await this.allergensService.GetAll().ToListAsync();
-
-                this.ViewData["allergens"] = allAllergens.Select(allergen => new IngredientCreateAllergenViewModel
-                {
-                    Name = allergen.Name
-
-                }).ToList();
+                this.ViewData["allergens"] = this.allergensService.GetAllToViewModel<IngredientCreateAllergenViewModel>();
 
                 return this.View(model);
             }

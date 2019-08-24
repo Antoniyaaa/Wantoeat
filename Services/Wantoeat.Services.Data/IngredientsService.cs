@@ -22,13 +22,6 @@
             this.dbContext = dbContext;
         }
 
-        public IQueryable<Ingredient> GetAll()
-        {
-            var ingredients = this.dbContext.Ingredients;
-
-            return ingredients;
-        }
-
         public IQueryable<Ingredient> GetAllUnused(int recipeId)
         {
             // TODO Refractor
@@ -41,7 +34,6 @@
             return result;
         }
 
-
         public async Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id)
         {
             var ingredient = await this.dbContext.Ingredients
@@ -50,13 +42,6 @@
                 .FirstOrDefaultAsync();
 
             return ingredient;
-        }
-
-        public IQueryable<IngredientSimpleViewModel> GetAllToSimpleViewModel()
-        {
-            var ingredients = this.dbContext.Ingredients.To<IngredientSimpleViewModel>();
-
-            return ingredients;
         }
 
         public async Task<bool> DeleteByIdAsync(int id)
@@ -68,38 +53,6 @@
             int result = await this.dbContext.SaveChangesAsync();
 
             return result > 0;
-        }
-
-        public ICollection<IngredientSimpleViewModel> GetIngredientsByAllergenId(int allergenId)
-        {
-            var ingredients = this.dbContext.IngredientAllergen.Where(x => x.AllergenId == allergenId)
-                .Select(x => x.Ingredient).To<IngredientSimpleViewModel>().ToList();
-
-            return ingredients;
-        }
-
-        public IList<IngredientForRecipeViewModel> GetIngredientsVMByRecipeId(int recipeId)
-        {
-            var ingredients = this.dbContext.RecipeIngredient.Where(x => x.RecipeId == recipeId)
-                .Select(x => x.Ingredient).To<IngredientForRecipeViewModel>().ToList();
-
-            return ingredients;
-        }
-
-        public IList<Ingredient> GetIngredientsByRecipeId(int recipeId)
-        {
-            var ingredients = this.dbContext.RecipeIngredient.Where(x => x.RecipeId == recipeId)
-                .Select(x => x.Ingredient).ToList();
-
-            return ingredients;
-        }
-
-        public IList<string> GetQuantitiesByRecipeId(int recipeId)
-        {
-            var quantities = this.dbContext.RecipeIngredient.Where(x => x.RecipeId == recipeId)
-                .Select(x => x.Quantity).ToList();
-
-            return quantities;
         }
 
         public async Task<Ingredient> CreateAsync(IngredientCreateInputModel model)
@@ -137,6 +90,7 @@
             ingredientFromDb.Name = model.Name;
             ingredientFromDb.Description = model.Description;
             ingredientFromDb.ImagePath = model.ImagePath;
+            ingredientFromDb.ModifiedOn = DateTime.UtcNow;
 
             var oldallergens = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == model.Id).ToList();
 
@@ -169,15 +123,6 @@
             return ingredientFromDb;
         }
 
-        public IQueryable<RecipeCreateIngredientViewModel> GetAllNamesByIds(int[] ids)
-        {
-            var ingredients = this.dbContext.Ingredients
-                .Where(x => ids.Contains(x.Id))
-                .To<RecipeCreateIngredientViewModel>();
-
-            return ingredients;
-        }
-
         private Ingredient GetById(int id)
         {
             var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Id == id);
@@ -188,6 +133,22 @@
             }
 
             return ingredient;
+        }
+
+        public IQueryable<TViewModel> GetAllToViewModel<TViewModel>()
+        {
+            var ingredients = this.dbContext.Ingredients.To<TViewModel>();
+
+            return ingredients;
+        }
+
+        public IQueryable<TViewModel> GetAllToViewModelByIds<TViewModel>(int[] ids)
+        {
+            var ingredients = this.dbContext.Ingredients
+                .Where(x => ids.Contains(x.Id))
+                .To<TViewModel>();
+
+            return ingredients;
         }
     }
 }

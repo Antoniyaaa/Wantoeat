@@ -39,7 +39,7 @@
         {
             inputModel.UserId = this.userManager.GetUserId(this.HttpContext.User);
 
-            await this.commentsService.Add(inputModel);
+            await this.commentsService.AddAsync(inputModel);
 
             return this.RedirectToAction("Details", "Recipes", new { id = inputModel.RecipeId });
         }

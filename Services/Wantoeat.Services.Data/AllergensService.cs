@@ -1,16 +1,11 @@
 ﻿namespace Wantoeat.Services.Data
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
-
+    using System.Linq;
+    using System.Threading.Tasks;
     using Wantoeat.Data;
-    using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
-    using Wantoeat.Web.ViewModels.Allergens;
 
     public class AllergensService : IAllergensService
     {
@@ -21,43 +16,21 @@
             this.dbContext = dbContext;
         }
 
-        public async Task<List<SelectListItem>> AllToSelectListItems()
+        public IQueryable<SelectListItem> AllToSelectListItems()
         {
-            var allergens = await this.dbContext.Allergens
+            var allergens = this.dbContext.Allergens
                                 .Select(x => new SelectListItem
                                 {
                                     Value = x.Id.ToString(),
                                     Text = x.Name,
-                                })
-                                .ToListAsync();
+                                });
 
             return allergens;
         }
 
-        public IQueryable<Allergen> GetAll()
+        public IQueryable<TViewModel> GetAllToViewModel<TViewModel>()
         {
-            return this.dbContext.Allergens;
-        }
-
-        public ICollection<AllergenViewModel> GetAllergensByIngredientId(int ingredientId)
-        {
-            var allergens = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == ingredientId)
-                .Select(x => x.Allergen).To<AllergenViewModel>().ToList();
-
-            return allergens;
-        }
-
-        public ICollection<AllergenViewModel> GetAllergensByRecipeId(int recipeId)
-        {
-            var allergens = this.dbContext.RecipeAllergen.Where(x => x.RecipeId == recipeId)
-                .Select(x => x.Allergen).To<AllergenViewModel>().ToList();
-
-            return allergens;
-        }
-
-        public IQueryable<AllergenSimpleViewModel> GetAllToSimpleViewModel()
-        {
-            var allergens = this.dbContext.Allergens.To<AllergenSimpleViewModel>();
+            var allergens = this.dbContext.Allergens.To<TViewModel>();
 
             return allergens;
         }
@@ -71,5 +44,15 @@
 
             return allergen;
         }
+
+        public IQueryable<TViewModel> GetAllToViewModelByIds<TViewModel>(int[] ids)
+        {
+            var allergens = this.dbContext.Allergens
+                .Where(x => ids.Contains(x.Id))
+                .To<TViewModel>();
+
+            return allergens;
+        }
+
     }
 }

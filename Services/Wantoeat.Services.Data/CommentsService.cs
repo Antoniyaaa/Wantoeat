@@ -7,6 +7,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using Wantoeat.Data;
+    using Wantoeat.Data.Common.Repositories;
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Comments;
@@ -20,18 +21,16 @@
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> Add(CommentInputModel inputModel)
+        public async Task<bool> AddAsync(CommentInputModel inputModel)
         {
             var comment = AutoMapper.Mapper.Map<Comment>(inputModel);
 
-            comment = this.dbContext.Comments.Add(comment).Entity;
+            this.dbContext.Comments.Add(comment);
 
             int result = await this.dbContext.SaveChangesAsync();
 
             return result > 0;
         }
-
-        // TODO Through repository!
 
         public async Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id)
         {
@@ -42,7 +41,6 @@
 
             return comment;
         }
-
 
         public async Task<bool> DeleteByIdAsync(int id)
         {

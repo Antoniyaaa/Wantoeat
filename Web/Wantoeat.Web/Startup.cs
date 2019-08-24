@@ -2,7 +2,7 @@
 {
     using System.IO;
     using System.Reflection;
-    using AutoMapper;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -10,6 +10,7 @@
     using Microsoft.AspNetCore.Identity.UI;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,6 @@
     using Wantoeat.Services.Data;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Services.Messaging;
-    using Wantoeat.Web.Areas.Administration.ViewModels;
     using Wantoeat.Web.ViewModels;
     using Wantoeat.Web.ViewModels.Allergens;
     using Wantoeat.Web.ViewModels.Ingredients;
