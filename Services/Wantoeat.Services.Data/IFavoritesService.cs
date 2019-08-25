@@ -7,7 +7,7 @@
 
     public interface IFavoritesService
     {
-        Task<bool> AddAsync(int id, string name);
+        bool Add(int id, string name);
 
         IQueryable<RecipeSimpleViewModel> GetAllFavouritesByUserName(string name);
 

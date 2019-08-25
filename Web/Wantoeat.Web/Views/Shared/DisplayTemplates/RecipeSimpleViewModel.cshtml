@@ -1,0 +1,12 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeSimpleViewModel
+
+    <div class="col-sm-4" style="padding-bottom:30px">
+        <div class="card" style="height:100%;padding:10px">
+            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.Id">
+                <img class="card-img-top mx-auto d-block" style="width:200px; height:200px;" src="@Url.Content(Model.ImagePath)">
+                <div class="card-body ">
+                    <h5 class="card-title text-center">@Model.Name</h5>
+                </div>
+            </a>
+        </div>
+    </div>

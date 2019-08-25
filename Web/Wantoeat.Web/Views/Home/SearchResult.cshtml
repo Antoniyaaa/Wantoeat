@@ -11,14 +11,13 @@
 @{
     @if (Model.Ingredients.Count() != 0)
     {
-        <h6>
-            Your ingredients:
+        <p>Your ingredients:</p>
+        <ul>
             @foreach (var item in @Model.Ingredients)
             {
-                <p>@item.Name</p>
+            <li>@item.Name</li>
             }
-
-        </h6>
+        </ul>
     }
     else
     {
@@ -28,25 +27,12 @@
             {
                 <p>@item.Name</p>
             }
-
         </h6>
     }
 
 }
 
 <div class="row">
-    @foreach (var item in Model.Recipes)
-    {
-        <div class="card-deck col-md-4 justify-content-md-center mb-4">
-            <div class="card">
-                <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.Id">
-                    <img class="card-img-top" src="@Url.Content(item.ImagePath)">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">@item.Name</h5>
-                    </div>
-                </a>
-            </div>
-        </div>
-    }
+        @Html.DisplayFor(x => x.Recipes)
 </div>
 

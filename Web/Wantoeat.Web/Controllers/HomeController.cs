@@ -30,11 +30,9 @@
             this.categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index([FromQuery]string criteria = null)
+        public async Task<IActionResult> Index()
         {
                 var recipes = await this.recipeService.GetAllToViewModel<RecipeSimpleViewModel>().ToListAsync();
-
-                this.ViewData["criteria"] = criteria;
 
                 return this.View(recipes);
         }
@@ -57,40 +55,6 @@
             SearchByIngredientsInputModel viewModel = new SearchByIngredientsInputModel { Ingredients = ingredients };
 
             return this.View(viewModel);
-        }
-
-        public async Task<IActionResult> SortRecipes([FromQuery]string sortBy = "category")
-        {
-            var recipes = this.recipeService.GetGroups(sortBy);
-
-            this.ViewData["sortBy"] = sortBy;
-
-            return this.View(recipes);
-        }
-
-        public async Task<IActionResult> AllRecipes([FromQuery]string category = null) //, int[] selected)
-        {
-            var recipes = this.recipeService.GetByCategory(category).To<RecipeSimpleViewModel>().ToList();
-
-            this.ViewData["category"] = category;
-
-            this.ViewData["allergens"] = this.allergensService.GetAllToViewModel<AllergenSimpleViewModel>().Select(x => x.Name);
-
-            /*if (selected.Length > 0)
-            {
-                recipes = this.recipeService.GetAllNonContainingAllergen(selected).To<RecipeSimpleViewModel>().ToList();
-            }*/
-
-            /*if (criteria != null)
-            {
-                // Ако има избрана някоя (1) категория
-                // то само алергените от нея трябва да бъдат показани
-            }*/
-
-            //this.ViewData["allergens"] = this.allergensService.GetAllToViewModel<AllergenSimpleViewModel>();
-
-
-            return this.View(recipes);
         }
 
         public async Task<IActionResult> SearchByAllergens(int[] selected)

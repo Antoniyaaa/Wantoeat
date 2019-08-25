@@ -20,7 +20,7 @@
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> AddAsync(int id, string name)
+        public bool Add(int id, string name)
         {
             var user = this.dbContext.Users.Include(x => x.FavouriteRecipes)
                         .FirstOrDefault(x => x.UserName == name);
@@ -45,9 +45,9 @@
                 ApplicationUserId = user.Id
             };
 
-            user.FavouriteRecipes.Add(favourite);
+            this.dbContext.ApplicationUserFavoriteRecipes.Add(favourite);
 
-            int result = await this.dbContext.SaveChangesAsync();
+            int result = this.dbContext.SaveChanges();
 
             return result > 0;
         }

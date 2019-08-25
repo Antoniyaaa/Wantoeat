@@ -1,0 +1,33 @@
+﻿@model Wantoeat.Web.ViewModels.Recipes.RecipeDetailViewModel
+@using Wantoeat.Common
+@using Wantoeat.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (Model.Comments.Any())
+{
+<h6>Comments: </h6>
+<div class="row">
+    @foreach (var item in Model.Comments)
+    {
+        @if (item.IsPrivate == true && item.ApplicationUserUserName != this.User.Identity.Name)
+            {
+                continue;
+            }
+        <div class="card" style="width: 18rem; margin:15px">
+            <div class="card-header">
+                Autor: @item.ApplicationUserUserName
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">@item.Content</li>
+                @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                {
+                    <a asp-area="Administration" asp-controller="Comments" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary">Delete</a>
+                }
+            </ul>
+        </div>
+    }
+</div>
+}

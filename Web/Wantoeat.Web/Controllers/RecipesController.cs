@@ -1,11 +1,12 @@
 ﻿namespace Wantoeat.Web.Controllers
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using Wantoeat.Services.Data;
+    using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Recipes;
 
     public class RecipesController : BaseController
@@ -24,12 +25,15 @@
             return this.View(viewModel);
         }
 
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All([FromQuery]string category = null)
         {
-            var recipes = await this.recipesService.GetAllToViewModel<RecipeSimpleViewModel>().ToListAsync();
+            var recipes = this.recipesService.GetByCategory(category).To<RecipeSimpleViewModel>().ToList();
+
+            this.ViewData["category"] = category;
 
             return this.View(recipes);
         }
+
 
     }
 }

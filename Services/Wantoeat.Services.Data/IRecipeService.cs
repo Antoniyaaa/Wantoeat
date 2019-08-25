@@ -15,7 +15,7 @@
 
         IQueryable<TViewModel> GetAllToViewModel<TViewModel>();
 
-        List<RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>> GetGroups(string sortBy = "category");
+        List<RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>> GetGroupsByCategories();
 
         Recipe GetById(int id);
 

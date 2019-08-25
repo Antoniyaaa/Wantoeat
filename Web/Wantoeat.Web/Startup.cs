@@ -2,7 +2,6 @@
 {
     using System.IO;
     using System.Reflection;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -10,7 +9,6 @@
     using Microsoft.AspNetCore.Identity.UI;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -92,6 +90,7 @@
 
             services.AddSingleton(this.configuration);
 
+
             // Identity stores
             services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
@@ -113,8 +112,6 @@
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICommentsService, CommentsService>();
             services.AddTransient<IFavoritesService, FavoritesService>();
-
-            // TODO: Check if correct, uplaod files:
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images")));
         }

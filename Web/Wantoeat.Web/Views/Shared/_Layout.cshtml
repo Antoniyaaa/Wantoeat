@@ -28,15 +28,21 @@
                 </div>
             </div>
         </nav>
+        @if (Context.Request.Path != "/")
+        {
+            <div class="container mb-3">
+                <a href="javascript:void(0);" onclick="history.go(-1);">Take me back</a>
+            </div>
+
+        }
     </header>
-    
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @this.RenderBody()
         </main>
     </div>
-    
+
     <footer class="border-top footer text-muted">
         <div class="container text-center">
             &copy; @DateTime.Now.Year - Wantoeat - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

@@ -8,7 +8,6 @@
 
     using Wantoeat.Services;
     using Wantoeat.Services.Data;
-    using Wantoeat.Web.ViewModels.Comments;
     using Wantoeat.Web.ViewModels.Ingredients;
     using Wantoeat.Web.ViewModels.Recipes;
 
@@ -116,10 +115,10 @@
                 return this.View(model);
             }
 
-            if (model.Quantity.Count() != model.IngredientNames.Count())
+            /*if (model.Quantity.Count() != model.IngredientNames.Count())
             {
                 // TODO ValidationAttribute or ErrorMessage
-            }
+            }*/
 
             if (model.NewImageFile != null && model.NewImageFile.Length != 0)
             {

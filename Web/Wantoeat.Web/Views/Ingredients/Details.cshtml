@@ -4,74 +4,59 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="container" mt-2>
-    <form asp-action="Details" method="get">
-        <div class="row justify-content-md-center mb-3">
-            <h1>@Model.Name</h1>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <img src="@Url.Content(Model.ImagePath)" class="img-thumbnail">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-5">
-                <p class="text-justify">@Model.Description</p>
-            </div>
-        </div>
-        @if (Model.IngredientAllergens.Any())
-        {
-            <div class="row mt-3">
-                <div class="col-md-4 text-center">
-                    <h5>Allergens:</h5>
-                    @foreach (var item in Model.IngredientAllergens)
-                    {
-                        <li class="text-left">
-                            <a asp-controller="Allergens" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-                        </li>
-                    }
-                </div>
-            </div>
-        }
-    </form>
+<div class="row justify-content-md-center">
+    <h1>@Model.Name</h1>
 </div>
-<div class="container" mt-5>
-    @if (Model.RecipeIngredients.Any())
-    {
-        <div class="row">
-            <p class="font-weight-bold">Recipes with this ingredient:</p>
+<hr class="hr-2">
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <img src="@Url.Content(Model.ImagePath)" class="img-thumbnail">
         </div>
-        <div class="row">
-            @foreach (var item in @Model.RecipeIngredients)
-            {<div class="col small">
-                        <div class="card">
-                            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@item.Id">
-                                <img class="card-img-top" src="@Url.Content(item.ImagePath)">
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">@item.Name</h5>
-                                </div>
-                            </a>
-                    </div>
-                </div>
-            }
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-5">
+            <p class="text-justify">@Model.Description</p>
+        </div>
+    </div>
+    @if (Model.IngredientAllergens.Any())
+    {
+        <div class="row mt-3 mb-5">
+            <div class="col-md-4 text-center">
+                <h5>Allergens:</h5>
+                @foreach (var item in Model.IngredientAllergens)
+                {
+                    <li class="text-left">
+                        <a asp-controller="Allergens" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                    </li>
+                }
+            </div>
         </div>
     }
-    </div>
-    <div class="row justify-content-md-center mt-5">
-        @if (User.IsInRole("Administrator"))
-        {
-            <div class="col-md-2 text-center">
-                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
-            </div>
-            <div class="col-md-2 text-center">
-                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
-            </div>
-            <div class="col-md-2 text-center">
-                <a asp-area="Administration" asp-controller="Ingredients" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
-            </div>
-        }
-        <div class="col-md-2 text-center">
-            <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
+    @if (Model.RecipeIngredients.Any())
+    {
+        <hr class="hr-2">
+        <div class="row justify-content-md-center mb-3">
+            <h2>Recipes with this ingredient:</h2>
         </div>
-
+        <div class="row">
+            @Html.DisplayFor(x => x.RecipeIngredients)
+        </div>
+    }
+<div class="row justify-content-md-center mt-5">
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Edit</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Delete</a>
+        </div>
+        <div class="col-md-2 text-center">
+            <a asp-area="Administration" asp-controller="Ingredients" asp-action="Create" class="btn btn-secondary btn-lg">Create New</a>
+        </div>
+    }
+    <div class="col-md-2 text-center">
+        <a asp-controller="Ingredients" asp-action="All" class="btn btn-secondary btn-lg">Show All</a>
     </div>
+
+</div>

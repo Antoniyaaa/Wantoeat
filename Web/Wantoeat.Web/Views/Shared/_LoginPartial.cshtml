@@ -5,21 +5,20 @@
 @inject UserManager<ApplicationUser> UserManager
 
     <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Recipes" asp-action="All">All Recipes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Ingredients" asp-action="All">Ingreidents</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Allergens" asp-action="All">Allergens</a>
+        </li>
+        <li class="nav-item" style="border-right: 1px lightgray solid">
+            <a class="nav-link text-dark" asp-controller="Categories" asp-action="AllRecipesByCategory">Categories</a>
+        </li>
         @if (this.SignInManager.IsSignedIn(this.User))
         {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Recipes" asp-action="All">Recipes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Ingredients" asp-action="All">Ingreidents</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Allergens" asp-action="All">Allergens</a>
-            </li>
-            <li class="nav-item mr-5">
-                <a class="nav-link text-dark" asp-controller="Catgories" asp-action="All">Catgories</a>
-            </li>
-
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Account</a>
             </li>

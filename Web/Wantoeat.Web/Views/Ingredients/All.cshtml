@@ -4,20 +4,58 @@
     this.ViewData["Title"] = "All";
 }
 
-<h1>All ingredients</h1>
-
-<div class="row">
-    @foreach (var item in Model)
+<div class="mb-5 text-center mx-auto">
+    <h1 class="display-4">Ingredients information</h1>
+</div>
+<div class="d-flex justify-content-between">
+    <div id="recipes-search-bar-holder" class="form-group d-flex justify-content-between w-100">
+        <input type="text" class="form-control text-primary" id="recipes-search-bar" name="search" placeholder="Search..." />
+    </div>
+</div>
+<hr class="hr-2">
+<div id="recipes" class="mt-3">
+    @for (int i = 0; i < Model.Count; i += 3)
     {
-        <div class="card-deck col-md-4 justify-content-md-center mb-4">
-            <div class="card">
-                <a asp-controller="Ingredients" asp-action="Details" asp-route-id="@item.Id">
-                    <img class="card-img-top" src="@Url.Content(item.ImagePath)">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">@item.Name</h5>
+        <div class="recipes-row row d-flex justify-content-around my-5">
+            @for (int j = i; j < i + 3; j++)
+            {
+                if (j < Model.Count)
+                {
+                    <div class="recipe col-md-4">
+                        <div class="card">
+                            <a asp-controller="Ingredients" asp-action="Details" asp-route-id="@Model[j].Id">
+                                <img class="card-img-top" src="@Url.Content(Model[j].ImagePath)">
+                                <div class="card-body">
+                                    <div class="card-title text-center">@Model[j].Name</div>
+                                </div>
+                            </a>
+                        </div>
+                        <h5 class="text-primary text-center mt-3" hidden>@Model[j].Name</h5>
                     </div>
-                </a>
-            </div>
+                }
+                else
+                {
+                    <div class="recipe col-md-4 empty">
+                    </div>
+                }
+            }
         </div>
     }
 </div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $('#recipes-search-bar').on("change paste keyup", function () {
+        $('.recipe').show();
+
+        let searchValue = $('#recipes-search-bar').val();
+
+        for (let elem of $('.recipe')) {
+            let recipeName = $($(elem).children()[1]).text();
+
+            if (!recipeName.toLowerCase().includes(searchValue.toLowerCase())) {
+                $(elem).hide();
+            }
+        }
+    });
+</script>

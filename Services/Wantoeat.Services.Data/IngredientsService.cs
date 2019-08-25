@@ -125,7 +125,9 @@
 
         private Ingredient GetById(int id)
         {
-            var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Id == id);
+            var ingredient = this.dbContext.Ingredients
+                .Include(x => x.IngredientAllergens)
+                .FirstOrDefault(x => x.Id == id);
 
             if (ingredient == null)
             {

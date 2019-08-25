@@ -27,7 +27,7 @@
 
         public async Task<IActionResult> Add(int id)
         {
-            await this.favoritesService.AddAsync(id, this.User.Identity.Name);
+            this.favoritesService.Add(id, this.User.Identity.Name);
 
             return RedirectToAction(nameof(All));
         }

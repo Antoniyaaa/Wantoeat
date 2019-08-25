@@ -6,6 +6,6 @@
     {
         public string GroupName { get; set; }
 
-        public List<RecipeCategoryAllergenViewModel> Recipes { get; set; }
+        public List<RecipeSimpleWithCategoryViewModel> Recipes { get; set; }
     }
 }

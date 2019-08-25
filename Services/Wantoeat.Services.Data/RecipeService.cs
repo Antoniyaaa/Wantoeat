@@ -132,21 +132,24 @@
             return result > 0;
         }
 
-        public List<RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>> GetGroups(string sortBy = "category")
+        public List<RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>> GetGroupsByCategories()
         {
-            var recipes = this.dbContext.Recipes.To<RecipeCategoryAllergenViewModel>();
-                var recipesCategories = recipes.GroupBy(x => x.CategoryName)
+            var recipes = this.dbContext.Recipes.To<RecipeSimpleWithCategoryViewModel>();
+
+            var recipesCategories = recipes.GroupBy(x => x.CategoryName)
                                     .Select(g => 
-                                    new RecipesInGroupsViewModel<string, List<RecipeCategoryAllergenViewModel>>
+                                    new RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>
                                     { GroupName = g.Key, Recipes = g.ToList() })
                                     .ToList();
 
-                return recipesCategories;
+            return recipesCategories;
         }
 
         public Recipe GetById(int id)
         {
-            var recipe = this.dbContext.Recipes.Where(x => x.Id == id).FirstOrDefault();
+            var recipe = this.dbContext.Recipes.Include(x => x.RecipeIngredient)
+                .Include(x => x.RecipeAllergens)
+                .Where(x => x.Id == id).FirstOrDefault();
 
             return recipe;
         }

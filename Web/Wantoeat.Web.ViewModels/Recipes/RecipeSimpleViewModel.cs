@@ -32,7 +32,6 @@
                 .ForMember(x => x.Name, opts => opts.MapFrom(y => y.Recipe.Name))
                 .ForMember(x => x.ImagePath, opts => opts.MapFrom(y => y.Recipe.ImagePath))
                 .ForMember(x => x.CommentContent, opts => opts.MapFrom(y => y.Recipe.Comments));
-
         }
     }
 }
