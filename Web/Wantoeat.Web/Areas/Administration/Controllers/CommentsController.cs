@@ -20,13 +20,23 @@
         {
             var viewModel = await this.commentsService.GetViewModelByIdAsync<CommentViewModel>(id);
 
+            if (viewModel == null)
+            {
+                return View("Error");
+            }
+
             return this.View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(CommentViewModel viewModel)
         {
-            await this.commentsService.DeleteByIdAsync(viewModel.Id);
+            var result = await this.commentsService.DeleteByIdAsync(viewModel.Id);
+
+            if (result == false)
+            {
+                return View("Error");
+            }
 
             return this.RedirectToAction("All", "Recipes");
         }

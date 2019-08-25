@@ -22,6 +22,11 @@
         {
             var viewModel = await this.recipesService.GetViewModelByIdAsync<RecipeDetailViewModel>(id);
 
+            if (viewModel == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.View(viewModel);
         }
 
@@ -33,7 +38,5 @@
 
             return this.View(recipes);
         }
-
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Wantoeat.Web.Controllers
 {
+    using System;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,11 @@
         public async Task<IActionResult> Details(int id)
         {
             var viewModel = await this.ingredientService.GetViewModelByIdAsync<IngredientDetailViewModel>(id);
+
+            if (viewModel == null)
+            {
+                throw new NullReferenceException();
+            }
 
             return this.View(viewModel);
         }

@@ -1,7 +1,6 @@
 ﻿namespace Wantoeat.Services.Data
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -9,7 +8,6 @@
 
     using Wantoeat.Data;
     using Wantoeat.Data.Models;
-    using Wantoeat.Services.Data;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Ingredients;
 
@@ -63,11 +61,18 @@
             {
                 foreach (var item in model.AllergenIds)
                 {
+                    var allergen = this.dbContext.Allergens.FirstOrDefault(x => x.Id == item);
+
+                    if (allergen == null)
+                    {
+                        continue;
+                    }
+
                     IngredientAllergen ingredientAllergen = new IngredientAllergen
                     {
                         IngredientId = ingredient.Id,
                         AllergenId = item,
-                        Allergen = this.dbContext.Allergens.FirstOrDefault(x => x.Id == item),
+                        Allergen = allergen,
                     };
 
                     ingredientAllergen = this.dbContext.IngredientAllergen.Add(ingredientAllergen).Entity;
@@ -105,36 +110,28 @@
 
                 foreach (var item in model.AllergenNames)
                 {
+                    var allergen = this.dbContext.Allergens.FirstOrDefault(x => x.Name == item);
+
+                    if (allergen == null)
+                    {
+                        continue;
+                    }
+
                     IngredientAllergen ingredientAllergen = new IngredientAllergen
                     {
                         Ingredient = ingredientFromDb,
-                        Allergen = this.dbContext.Allergens.FirstOrDefault(x => x.Name == item),
+                        Allergen = allergen,
                     };
 
                     ingredientAllergen = this.dbContext.IngredientAllergen.Add(ingredientAllergen).Entity;
 
                     ingredientFromDb.IngredientAllergens.Add(ingredientAllergen);
                 }
-
             }
 
             await this.dbContext.SaveChangesAsync();
 
             return ingredientFromDb;
-        }
-
-        private Ingredient GetById(int id)
-        {
-            var ingredient = this.dbContext.Ingredients
-                .Include(x => x.IngredientAllergens)
-                .FirstOrDefault(x => x.Id == id);
-
-            if (ingredient == null)
-            {
-                throw new ArgumentNullException(nameof(ingredient));
-            }
-
-            return ingredient;
         }
 
         public IQueryable<TViewModel> GetAllToViewModel<TViewModel>()
@@ -152,5 +149,20 @@
 
             return ingredients;
         }
+
+        private Ingredient GetById(int id)
+        {
+            var ingredient = this.dbContext.Ingredients
+                .Include(x => x.IngredientAllergens)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (ingredient == null)
+            {
+                throw new ArgumentNullException(nameof(ingredient));
+            }
+
+            return ingredient;
+        }
+
     }
 }

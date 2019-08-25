@@ -25,18 +25,21 @@
             var user = this.dbContext.Users.Include(x => x.FavouriteRecipes)
                         .FirstOrDefault(x => x.UserName == name);
 
-            // TODO if already is there user.FavouriteRecipes.Any(x => x.RecipeId == id)
-
             if (user == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                return false;
             }
 
             var recipe = this.dbContext.Recipes.Where(x => x.Id == id).FirstOrDefault();
 
             if (recipe == null)
             {
-                throw new ArgumentNullException(nameof(recipe));
+                return false;
+            }
+
+            if (user.FavouriteRecipes.Any(x => x.RecipeId == recipe.Id))
+            {
+                return true;
             }
 
             var favourite = new ApplicationUserFavoriteRecipes
@@ -66,6 +69,11 @@
             var favoriteRecipe = this.dbContext.ApplicationUserFavoriteRecipes
                                    .FirstOrDefault(x => x.ApplicationUser.UserName == name 
                                    && x.RecipeId == id);
+
+            if (favoriteRecipe == null)
+            {
+                return false;
+            }
 
             this.dbContext.ApplicationUserFavoriteRecipes.Remove(favoriteRecipe);
 

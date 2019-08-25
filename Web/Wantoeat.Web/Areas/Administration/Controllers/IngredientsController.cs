@@ -1,17 +1,13 @@
 ﻿namespace Wantoeat.Web.Areas.Administration.Controllers
 {
-    using System.Collections.Generic;
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.EntityFrameworkCore;
-    using Wantoeat.Data.Models;
+
     using Wantoeat.Services;
     using Wantoeat.Services.Data;
-    using Wantoeat.Services.Mapping;
-    using Wantoeat.Web.Areas.Administration.ViewModels;
     using Wantoeat.Web.ViewModels.Allergens;
     using Wantoeat.Web.ViewModels.Ingredients;
 
@@ -59,12 +55,22 @@
 
             var ingredient = await this.ingredientService.CreateAsync(model);
 
+            if (ingredient == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.RedirectToAction("Details", new { id = ingredient.Id });
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             var viewModel = await this.ingredientService.GetViewModelByIdAsync<IngredientEditInputModel>(id);
+
+            if (viewModel == null)
+            {
+                throw new NullReferenceException();
+            }
 
             this.ViewData["allergens"] = this.allergensService.GetAllToViewModel<IngredientCreateAllergenViewModel>();
 
@@ -88,6 +94,11 @@
 
             var ingredient = await this.ingredientService.EditAsync(model);
 
+            if (ingredient == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.RedirectToAction("Details", new { id = ingredient.Id });
         }
 
@@ -95,13 +106,23 @@
         {
             var viewModel = await this.ingredientService.GetViewModelByIdAsync<IngredientSimpleViewModel>(id);
 
+            if (viewModel == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(IngredientSimpleViewModel viewModel)
         {
-            await this.ingredientService.DeleteByIdAsync(viewModel.Id);
+            var result = await this.ingredientService.DeleteByIdAsync(viewModel.Id);
+
+            if (result == false)
+            {
+                throw new NullReferenceException();
+            }
 
             return this.RedirectToAction("All");
         }

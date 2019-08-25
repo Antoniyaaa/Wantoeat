@@ -17,6 +17,7 @@
         public CommentCreateRecipeViewModel Recipe { get; set; }
 
         [Required]
+        [StringLength(200)]
         public string Content { get; set; }
 
         public bool IsPrivate { get; set; }

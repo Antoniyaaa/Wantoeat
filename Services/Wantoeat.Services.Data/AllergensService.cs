@@ -1,9 +1,11 @@
 ﻿namespace Wantoeat.Services.Data
 {
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.EntityFrameworkCore;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+
     using Wantoeat.Data;
     using Wantoeat.Services.Mapping;
 
@@ -53,6 +55,5 @@
 
             return allergens;
         }
-
     }
 }

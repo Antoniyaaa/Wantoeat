@@ -30,10 +30,17 @@
             {
                 for (int i = 0; i < model.IngredientNames.Count(); i++)
                 {
+                    var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]);
+
+                    if (ingredient == null)
+                    {
+                        continue;
+                    }
+
                     RecipeIngredient recipeIngredient = new RecipeIngredient
                     {
                         Recipe = recipe,
-                        Ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]),
+                        Ingredient = ingredient,
                         Quantity = model.RecipeIngredientQuantity[i],
                     };
 
@@ -45,6 +52,7 @@
                             Recipe = recipe,
                             Allergen = this.dbContext.IngredientAllergen.Where(x => x.Ingredient.Name == model.IngredientNames[i]).Select(x => x.Allergen).FirstOrDefault()
                         };
+
                         recipeAllergen = this.dbContext.RecipeAllergen.Add(recipeAllergen).Entity;
                         recipe.RecipeAllergens.Add(recipeAllergen);
                     }
@@ -91,10 +99,17 @@
 
             for (int i = recipeFromDb.RecipeIngredient.Count(); i < model.IngredientNames.Count(); i++)
             {
+                var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]);
+
+                if (ingredient == null)
+                {
+                    continue;
+                }
+
                 RecipeIngredient recipeIngredient = new RecipeIngredient
                 {
                     Recipe = recipeFromDb,
-                    Ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]),
+                    Ingredient = ingredient,
                     Quantity = model.Quantity[i],
                 };
 
@@ -195,26 +210,15 @@
 
         public IQueryable<Recipe> GetAllNonContainingAllergen(int[] allergenIds)
         {
-            /*var recipes = this.dbContext.RecipeAllergen
-                //.Where(x => !allergenIds.Contains(x.AllergenId))
-                .Select(x => x.Recipe)
-                .Distinct().ToList();*/
-
-            /*var ingredients = this.dbContext.Ingredients;
-            var ingredientsRecipe = this.dbContext.RecipeIngredient
-                                    .Where(x => x.RecipeId == recipeId)
-                                    .Select(x => x.Ingredient);
-            var result = ingredients.Where(x => !ingredientsRecipe.Any(x2 => x2.Id == x.Id));*/
-
+            // TODO Refractor
             var allergens = this.dbContext.RecipeAllergen
                 .Where(x => allergenIds.Contains(x.AllergenId))
                 .Select(x => x.Recipe)
                 .ToList();
             var recipes = this.dbContext.Recipes.ToList();
-            var blq = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).AsQueryable();
+            var result = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).AsQueryable();
 
-
-            return blq;
+            return result;
         }
     }
 }

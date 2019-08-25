@@ -1,5 +1,6 @@
 ﻿namespace Wantoeat.Web.Areas.Administration.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -48,16 +49,11 @@
         [HttpPost]
         public async Task<IActionResult> Create(RecipeCreateInputModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model.RecipeIngredientQuantity.Count() != model.IngredientNames.Count())
             {
                 this.ViewData["ingredients"] = await this.ingredientService.GetAllToViewModel<RecipeCreateIngredientViewModel>().ToListAsync();
 
                 return this.View(model);
-            }
-
-            if (model.RecipeIngredientQuantity.Count() != model.IngredientNames.Count())
-            {
-                // TODO ValidationAttribute or ErrorMessage
             }
 
             if (model.ImageFile != null && model.ImageFile.Length != 0)
@@ -66,6 +62,11 @@
             }
 
             var recipe = await this.recipeService.CreateAsync(model);
+
+            if (recipe == null)
+            {
+                throw new NullReferenceException();
+            }
 
             return this.RedirectToAction("Details", new { id = recipe.Id });
         }
@@ -89,13 +90,18 @@
 
             var model = await this.recipeService.GetViewModelByIdAsync<RecipeEditInputModel>(id);
 
+            if (model == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(RecipeEditInputModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model.Quantity.Count != model.IngredientNames.Count())
             {
                 var unusedIngredients = await this.ingredientService.GetAllUnused(model.Id).ToListAsync();
 
@@ -115,17 +121,17 @@
                 return this.View(model);
             }
 
-            /*if (model.Quantity.Count() != model.IngredientNames.Count())
-            {
-                // TODO ValidationAttribute or ErrorMessage
-            }*/
-
             if (model.NewImageFile != null && model.NewImageFile.Length != 0)
             {
                 model.ImagePath = this.imageService.UploadImage(model.NewImageFile, model.Name);
             }
 
             var recipe = await this.recipeService.EditAsync(model);
+
+            if (recipe == null)
+            {
+                throw new NullReferenceException();
+            }
 
             return this.RedirectToAction("Details", new { id = recipe.Id });
         }
@@ -134,13 +140,23 @@
         {
             var viewModel = await this.recipeService.GetViewModelByIdAsync<RecipeSimpleViewModel>(id);
 
+            if (viewModel == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return this.View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(RecipeSimpleViewModel viewModel)
         {
-            await this.recipeService.DeleteByIdAsync(viewModel.Id);
+            var result = await this.recipeService.DeleteByIdAsync(viewModel.Id);
+
+            if (result == false)
+            {
+                throw new NullReferenceException();
+            }
 
             return this.RedirectToAction("All");
         }

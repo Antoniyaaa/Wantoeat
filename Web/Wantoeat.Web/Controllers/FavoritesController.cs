@@ -1,5 +1,6 @@
 ﻿namespace Wantoeat.Web.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
@@ -27,14 +28,24 @@
 
         public async Task<IActionResult> Add(int id)
         {
-            this.favoritesService.Add(id, this.User.Identity.Name);
+            var result = this.favoritesService.Add(id, this.User.Identity.Name);
+
+            if (result == false)
+            {
+                throw new ArgumentNullException();
+            }
 
             return RedirectToAction(nameof(All));
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            await this.favoritesService.DeleteAsync(id, this.User.Identity.Name);
+            var result = await this.favoritesService.DeleteAsync(id, this.User.Identity.Name);
+
+            if (result == false)
+            {
+                throw new NullReferenceException();
+            }
 
             return RedirectToAction(nameof(All));
         }
