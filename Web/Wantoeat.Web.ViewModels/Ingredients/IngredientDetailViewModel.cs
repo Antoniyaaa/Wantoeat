@@ -20,6 +20,5 @@
         public string ImagePath { get; set; }
 
         public List<RecipeSimpleViewModel> RecipeIngredients { get; set; }
-
     }
 }
