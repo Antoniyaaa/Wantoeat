@@ -8,7 +8,7 @@ For the creation of this project is used template made by Nikolay Kostov:
 https://github.com/NikolayIT/ASP.NET-MVC-Template
 
 Wantoeat is a simple web application on ASP .NET MVC Core.
-It is still in progress and we hope that we will have it ready soon.
+It is still in progress and we hope that we will have it ready soon. 
 
 
 ## How to run the project
