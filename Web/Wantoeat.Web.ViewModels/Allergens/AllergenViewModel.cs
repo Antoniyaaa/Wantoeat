@@ -22,6 +22,5 @@
                .ForMember(x => x.Id, opts => opts.MapFrom(y => y.AllergenId))
                .ForMember(x => x.Name, opts => opts.MapFrom(y => y.Allergen.Name));
         }
-
     }
 }

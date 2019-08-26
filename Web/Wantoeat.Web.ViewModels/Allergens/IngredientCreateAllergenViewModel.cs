@@ -6,6 +6,5 @@
     public class IngredientCreateAllergenViewModel : IMapFrom<Allergen>
     {
         public string Name { get; set; }
-
     }
 }
