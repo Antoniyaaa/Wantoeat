@@ -26,11 +26,11 @@
             var recipe = AutoMapper.Mapper.Map<Recipe>(model);
 
             // TODO Mapping
-            if (model.IngredientNames != null)
+            if (model.IngredientQuantities != null)
             {
-                for (int i = 0; i < model.IngredientNames.Count(); i++)
+                for (int i = 0; i < model.IngredientQuantities.IngredientNames.Count(); i++)
                 {
-                    var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientNames[i]);
+                    var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientQuantities.IngredientNames[i]);
 
                     if (ingredient == null)
                     {
@@ -41,16 +41,16 @@
                     {
                         Recipe = recipe,
                         Ingredient = ingredient,
-                        Quantity = model.RecipeIngredientQuantity[i],
+                        Quantity = model.IngredientQuantities.RecipeIngredientQuantity[i],
                     };
 
-                    if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == model.IngredientNames[i] &&
+                    if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == ingredient.Name &&
                         !recipe.RecipeAllergens.Any(y => y.AllergenId == x.AllergenId)))
                     {
                         RecipeAllergen recipeAllergen = new RecipeAllergen
                         {
                             Recipe = recipe,
-                            Allergen = this.dbContext.IngredientAllergen.Where(x => x.Ingredient.Name == model.IngredientNames[i]).Select(x => x.Allergen).FirstOrDefault()
+                            Allergen = this.dbContext.IngredientAllergen.Where(x => x.Ingredient.Name == model.IngredientQuantities.IngredientNames[i]).Select(x => x.Allergen).FirstOrDefault()
                         };
 
                         recipeAllergen = this.dbContext.RecipeAllergen.Add(recipeAllergen).Entity;
@@ -113,7 +113,7 @@
                     Quantity = model.Quantity[i],
                 };
 
-                if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == model.IngredientNames[i] &&
+                if (this.dbContext.IngredientAllergen.Any(x => x.Ingredient.Name == ingredient.Name &&
                     !recipeFromDb.RecipeAllergens.Any(y => y.AllergenId == x.AllergenId)))
                 {
                     RecipeAllergen recipeAllergen = new RecipeAllergen
@@ -172,6 +172,7 @@
         public async Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id)
         {
             var recipe = await this.dbContext.Recipes
+                .Include(x => x.RecipeIngredient)
                 .Where(r => r.Id == id)
                 .To<TViewModel>()
                 .FirstOrDefaultAsync();

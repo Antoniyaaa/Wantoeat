@@ -44,7 +44,14 @@
 
         public async Task<bool> DeleteByIdAsync(int id)
         {
-            var ingredient = this.GetById(id);
+            var ingredient = this.dbContext.Ingredients
+                            .FirstOrDefault(x => x.Id == id);
+
+             if (ingredient == null)
+             {
+                 return false;
+             }
+
             ingredient.IsDeleted = true;
             ingredient.DeletedOn = DateTime.UtcNow;
 
@@ -90,26 +97,35 @@
 
         public async Task<Ingredient> EditAsync(IngredientEditInputModel model)
         {
-            var ingredientFromDb = GetById(model.Id);
+            var ingredientFromDb = this.dbContext.Ingredients
+                .Include(x => x.IngredientAllergens)
+                .FirstOrDefault(x => x.Id == model.Id);
+
+            if (ingredientFromDb == null)
+            {
+                return null;
+            }
 
             ingredientFromDb.Name = model.Name;
             ingredientFromDb.Description = model.Description;
             ingredientFromDb.ImagePath = model.ImagePath;
             ingredientFromDb.ModifiedOn = DateTime.UtcNow;
 
-            var oldallergens = this.dbContext.IngredientAllergen.Where(x => x.IngredientId == model.Id).ToList();
-
-            if (oldallergens.Any() && model.AllergenNames == null)
-            {
-                this.dbContext.RemoveRange(oldallergens);
-            }
-
             if (model.AllergenNames != null)
             {
-                this.dbContext.RemoveRange(oldallergens);
+                var oldallergens = this.dbContext.IngredientAllergen
+                    .Include(x => x.Allergen)
+                    .Where(x => x.IngredientId == ingredientFromDb.Id)
+                    .ToList();
 
                 foreach (var item in model.AllergenNames)
                 {
+                    if (item == "RemoveOlds")
+                    {
+                        this.dbContext.RemoveRange();
+                        continue;
+                    }
+
                     var allergen = this.dbContext.Allergens.FirstOrDefault(x => x.Name == item);
 
                     if (allergen == null)
@@ -123,9 +139,12 @@
                         Allergen = allergen,
                     };
 
-                    ingredientAllergen = this.dbContext.IngredientAllergen.Add(ingredientAllergen).Entity;
+                    if (oldallergens.Select(x => x.Allergen).Contains(allergen))
+                    {
+                        continue;
+                    }
 
-                    ingredientFromDb.IngredientAllergens.Add(ingredientAllergen);
+                    ingredientAllergen = this.dbContext.IngredientAllergen.Add(ingredientAllergen).Entity;
                 }
             }
 
@@ -149,20 +168,5 @@
 
             return ingredients;
         }
-
-        private Ingredient GetById(int id)
-        {
-            var ingredient = this.dbContext.Ingredients
-                .Include(x => x.IngredientAllergens)
-                .FirstOrDefault(x => x.Id == id);
-
-            if (ingredient == null)
-            {
-                throw new ArgumentNullException(nameof(ingredient));
-            }
-
-            return ingredient;
-        }
-
     }
 }

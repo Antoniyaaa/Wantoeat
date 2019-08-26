@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="ImagePath" class="control-label"></label>
-                    <input asp-for="ImagePath" class="form-control" hidden/>
+                    <input asp-for="ImagePath" class="form-control" hidden />
                     <img src="@Url.Content(Model.ImagePath)" class="img-thumbnail">
                 </div>
                 <div class="form-group">
@@ -35,36 +35,58 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-4">
+                <label asp-for="AllergenNames" class="control-label"></label>
+                @if (Model.AllergenNames.Any())
+                {
+                    <div class="row mb-5">
+                        <div class="col-md-4 text-center">
+                            @foreach (var item in Model.AllergenNames)
+                            {
+                                <li class="text-left">@item</li>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-weight-light">There are currently no allergens.</p>
+                }
+            </div>
             <div class="col-md-2">
             </div>
-            <select class="form-control text-primary" id="allergens" asp-for="AllergenNames">
-                @foreach (var item in (IEnumerable<IngredientCreateAllergenViewModel>)this.ViewData["allergens"])
-                {
-                    @if (Model.AllergenNames != null)
+            <div class="form-group col-md-4">
+                <label>Please select if you want to make changes in the current allergens</label>
+                <select class="form-control text-primary" id="allergens" asp-for="AllergenNames" size="7">
+                    <option value="RemoveOlds">Remove the current ones</option>
+                    @foreach (var item in (IEnumerable<IngredientCreateAllergenViewModel>)this.ViewData["allergens"])
                     {
-                        @if (Model.AllergenNames.Contains(item.Name))
+                        @if (Model.AllergenNames != null)
                         {
-                            <option value="@item.Name" selected>@item.Name</option>
+                            @if (Model.AllergenNames.Contains(item.Name))
+                            {
+                                <option value="@item.Name" hidden>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Name">Add @item.Name</option>
+                            }
                         }
                         else
                         {
-                            <option value="@item.Name">@item.Name</option>
+                            <option value="@item.Name">Add: @item.Name</option>
                         }
                     }
-                    else
-                    {
-                        <option value="@item.Name">@item.Name</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="container" mt-2>
-            <div class="row">
-                <div class="form-group">
-                    <input type="submit" value="Submit" class="btn btn-primary" />
-                </div>
+                </select>
             </div>
         </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
     </form>
     <div class="form-group">
         <a asp-controller="Ingredients" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary btn-lg">Cancel</a>

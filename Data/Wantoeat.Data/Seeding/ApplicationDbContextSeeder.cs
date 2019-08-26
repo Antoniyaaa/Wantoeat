@@ -28,6 +28,7 @@
                               new RolesSeeder(),
                               new SettingsSeeder(),
                               new AllergensSeeder(),
+                              new IngredientsSeeder(),
                               new CookingTimesSeeder(),
                               new CategoriesSeeder(),
                           };

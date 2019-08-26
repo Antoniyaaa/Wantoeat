@@ -1,15 +1,16 @@
 ﻿namespace Wantoeat.Services.Data.Tests
 {
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc.Rendering;
+
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Data.Tests.Common;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.Allergens;
     using Xunit;
-
 
     public class AllergensServiceTests
     {

@@ -4,7 +4,7 @@
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
 
-    public class AllergenViewModel : IMapFrom<RecipeAllergen>, IMapTo<Allergen>, IHaveCustomMappings
+    public class AllergenViewModel : IMapFrom<Allergen>, IMapFrom<RecipeAllergen>, IMapTo<Allergen>, IHaveCustomMappings
     {
         public int Id { get; set; }
 

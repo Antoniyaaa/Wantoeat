@@ -28,17 +28,30 @@
         public int CookingTimeId { get; set; }
         public ICollection<SelectListItem> CookingTimes { get; set; }
 
-        [Display(Name = "Choose Ingredients")]
-        public IList<string> IngredientNames { get; set; }
-
-        [Required(ErrorMessage = "Number of quanity fields have to be equal to the chosen ingredients")]
-        [Display(Name = "Add quantity for each Ingredient")]
-        public IList<string> RecipeIngredientQuantity { get; set; }
+        [Required]
+        public IngredientQuantities IngredientQuantities { get; set; }
 
         public string ImagePath { get; set; }
 
         [Display(Name = "Upload Image")]
         [ImageValidationAttribute(ErrorMessage = "Allowed extensions: jpg, jpeg, png, bmp.")]
         public IFormFile ImageFile { get; set; }
+    }
+
+    public class IngredientQuantities : IValidatableObject
+    {
+        [Display(Name = "Choose Ingredients")]
+        public IList<string> IngredientNames { get; set; }
+
+        [Display(Name = "Add quantity for each Ingredient")]
+        public IList<string> RecipeIngredientQuantity { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            if (this.IngredientNames.Count != this.RecipeIngredientQuantity.Count)
+            {
+                yield return new ValidationResult("Ingredients count and quantities count must be equal.");
+            }
+        }
     }
 }

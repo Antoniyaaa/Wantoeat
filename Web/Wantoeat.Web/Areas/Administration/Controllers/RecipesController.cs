@@ -49,9 +49,15 @@
         [HttpPost]
         public async Task<IActionResult> Create(RecipeCreateInputModel model)
         {
-            if (!ModelState.IsValid || model.RecipeIngredientQuantity.Count() != model.IngredientNames.Count())
+            if (!ModelState.IsValid)
             {
+                var cookingTimes = await this.cookingTimeService.AllToSelectListItems();
+                var categories = await this.categoryService.AllToSelectListItems();
+
                 this.ViewData["ingredients"] = await this.ingredientService.GetAllToViewModel<RecipeCreateIngredientViewModel>().ToListAsync();
+
+                model.Categories = categories;
+                model.CookingTimes = cookingTimes;
 
                 return this.View(model);
             }
@@ -73,6 +79,13 @@
 
         public async Task<IActionResult> Edit(int id)
         {
+            var model = await this.recipeService.GetViewModelByIdAsync<RecipeEditInputModel>(id);
+
+            if (model == null)
+            {
+                throw new NullReferenceException();
+            }
+
             var unusedIngredients = await this.ingredientService.GetAllUnused(id).ToListAsync();
 
             this.ViewData["ingredients"] = unusedIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
@@ -88,20 +101,33 @@
             var allCategories = await this.categoryService.GetAll().ToListAsync();
             this.ViewData["categories"] = allCategories.Select(item => item.Name).ToList();
 
-            var model = await this.recipeService.GetViewModelByIdAsync<RecipeEditInputModel>(id);
-
-            if (model == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return this.View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(RecipeEditInputModel model)
         {
-            if (!ModelState.IsValid || model.Quantity.Count != model.IngredientNames.Count())
+            if (!ModelState.IsValid)
+            {
+                var unusedIngredients = await this.ingredientService.GetAllUnused(model.Id).ToListAsync();
+
+                this.ViewData["ingredients"] = unusedIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
+                {
+                    Name = ingredient.Name
+
+                }).OrderBy(x => x.Name)
+                .ToList();
+
+                var allCookingTimes = await this.cookingTimeService.GetAll().ToListAsync();
+                this.ViewData["cookingTimes"] = allCookingTimes.Select(item => item.Name).ToList();
+
+                var allCategories = await this.categoryService.GetAll().ToListAsync();
+                this.ViewData["categories"] = allCategories.Select(item => item.Name).ToList();
+
+                return this.View(model);
+            }
+
+            if (model.IngredientNames.Count() != model.Quantity.Count())
             {
                 var unusedIngredients = await this.ingredientService.GetAllUnused(model.Id).ToListAsync();
 
