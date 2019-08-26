@@ -15,6 +15,8 @@
     <Compile Remove="Migrations\20190806160039_DbSetAgain.Designer.cs" />
     <Compile Remove="Migrations\20190815054317_SomeRefining.cs" />
     <Compile Remove="Migrations\20190815054317_SomeRefining.Designer.cs" />
+    <Compile Remove="Migrations\20190826174421_Seed.cs" />
+    <Compile Remove="Migrations\20190826174421_Seed.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

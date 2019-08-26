@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
@@ -27,12 +27,9 @@
                           {
                               new RolesSeeder(),
                               new SettingsSeeder(),
-                              new AllergensSeeder(),
-                              new IngredientsSeeder(),
-                              new CookingTimesSeeder(),
-                              new CategoriesSeeder(),
+                              new RecipesSeeder(),
                           };
-
+            
             foreach (var seeder in seeders)
             {
                 await seeder.SeedAsync(dbContext, serviceProvider);

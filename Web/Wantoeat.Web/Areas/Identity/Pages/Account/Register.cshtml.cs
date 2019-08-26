@@ -62,7 +62,7 @@
 
                     if (isRoot)
                     {
-                        await this.userManager.AddToRoleAsync(user, "Admin");
+                        await this.userManager.AddToRoleAsync(user, "Administrator");
                     }
                     else
                     {
