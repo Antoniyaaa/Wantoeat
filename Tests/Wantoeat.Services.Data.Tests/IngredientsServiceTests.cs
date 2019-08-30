@@ -144,20 +144,6 @@
             Assert.True(actual.IngredientAllergens.Count == 1);
         }
 
-        /* [Fact]
-         public async Task GetById_ShouldReturnCorrectResult()
-         {
-             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
-             await SeedData(dbContext);
-             var service = new IngredientsService(dbContext);
-
-             var exptected = dbContext.Ingredients.First();
-             var actual = service.GetById(exptected.Id);
-
-             Assert.True(exptected.Id == actual.Id);
-             Assert.True(exptected.Name == actual.Name);
-         }*/
-
         [Fact]
         public async Task DeleteById_WithNotExistingId_ShouldReturnFalse()
         {
@@ -338,6 +324,5 @@
 
             Assert.True(countAfterEdit == (countBeforeEdit + 1));
         }
-
     }
 }

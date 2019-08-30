@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Wantoeat.Data.Models;
 
@@ -17,33 +15,36 @@ namespace Wantoeat.Data.Seeding
                 return;
             }
 
-            var category1 = new Category { Name = "Soups" };
-            var category2 = new Category { Name = "Salads" };
-            var category3 = new Category { Name = "Pasta" };
-            var category4 = new Category { Name = "Meat" };
-            var category5 = new Category { Name = "Vegetarian" };
-            var category6 = new Category { Name = "Vegan" };
-            var category7 = new Category { Name = "Desserts" };
-            var category8 = new Category { Name = "Drinks" };
-            var category9 = new Category { Name = "Fish" };
+            var soupsCategory = new Category { Name = "Soups" };
+            var saladsCategory = new Category { Name = "Salads" };
+            var pastaCategory = new Category { Name = "Pasta" };
+            var meatCategory = new Category { Name = "Meat" };
+            var vegetarianCategory = new Category { Name = "Vegetarian" };
+            var veganCategory = new Category { Name = "Vegan" };
+            var dessertsCategory = new Category { Name = "Desserts" };
+            var drinksCategory = new Category { Name = "Drinks" };
+            var fishCategory = new Category { Name = "Fish" };
 
-            var categories = new List<Category> { category1, category2, category3, category4, category5, category6, category7, category8, category9 };
+            var categories = new List<Category>
+            {
+                soupsCategory, saladsCategory, pastaCategory, meatCategory, vegetarianCategory, veganCategory, dessertsCategory, drinksCategory, fishCategory
+            };
 
             await dbContext.Categories.AddRangeAsync(categories);
 
-            var cookingTime1 = new CookingTime { Name = "15 minutes" };
-            var cookingTime2 = new CookingTime { Name = "30 minutes" };
-            var cookingTime3 = new CookingTime { Name = "45 minutes" };
-            var cookingTime4 = new CookingTime { Name = "1 hour" };
-            var cookingTime5 = new CookingTime { Name = "1.5 hours" };
-            var cookingTime6 = new CookingTime { Name = "2 hours" };
+            var cookingTime15 = new CookingTime { Name = "15 minutes" };
+            var cookingTime30 = new CookingTime { Name = "30 minutes" };
+            var cookingTime45 = new CookingTime { Name = "45 minutes" };
+            var cookingTime1 = new CookingTime { Name = "1 hour" };
+            var cookingTime1AndAHalf = new CookingTime { Name = "1.5 hours" };
+            var cookingTime2 = new CookingTime { Name = "2 hours" };
 
-            var cookingTimes = new List<CookingTime> { cookingTime1, cookingTime2, cookingTime3, cookingTime4, cookingTime5, cookingTime6 };
+            var cookingTimes = new List<CookingTime> { cookingTime15, cookingTime30, cookingTime45, cookingTime1, cookingTime1AndAHalf, cookingTime2 };
 
             await dbContext.CookingTimes.AddRangeAsync(cookingTimes);
 
 
-            var allergen1 = new Allergen
+            var gluten = new Allergen
             {
                 Name = "Gluten",
                 Description = "Wheat (such as spelt and Khorasan wheat/Kamut), rye, " +
@@ -52,21 +53,21 @@ namespace Wantoeat.Data.Seeding
     "are dusted with flour.",
                 ImagePath = "/images/gluten.jpg"
             };
-            var allergen2 = new Allergen
+            var egg = new Allergen
             {
                 Name = "Eggs",
                 Description = "Eggs are often found in cakes, some meat products, mayonnaise, " +
             "mousses, pasta, quiche, sauces and pastries or foods brushed or glazed with egg.",
                 ImagePath = "/images/eggs.jpg"
             };
-            var allergen3 = new Allergen
+            var fish = new Allergen
             {
                 Name = "Fish",
                 Description = "You will find this in some fish sauces, pizzas, relishes, " +
             "salad dressings, stock cubes and Worcestershire sauce.",
                 ImagePath = "/images/fish.jpg"
             };
-            var allergen4 = new Allergen
+            var crustaceans = new Allergen
             {
                 Name = "Crustaceans",
                 Description = "Crabs, lobster, prawns and scampi are crustaceans. " +
@@ -74,7 +75,7 @@ namespace Wantoeat.Data.Seeding
             ,
                 ImagePath = "/images/crustaceans.jpg"
             };
-            var allergen5 = new Allergen
+            var celery = new Allergen
             {
                 Name = "Celery",
                 Description = "This includes celery stalks, leaves, seeds and the root " +
@@ -82,14 +83,14 @@ namespace Wantoeat.Data.Seeding
             ,
                 ImagePath = "/images/celery.jpg"
             };
-            var allergen6 = new Allergen
+            var lupin = new Allergen
             {
                 Name = "Lupin",
                 Description = "Yes, lupin is a flower, but it’s also found in flour! Lupin " +
             "flour and seeds can be used in some types of bread, pastries and even in pasta.",
                 ImagePath = "/images/lupin.jpg"
             };
-            var allergen7 = new Allergen
+            var milk = new Allergen
             {
                 Name = "Milk",
                 Description = "Milk is a common ingredient in butter, cheese, cream, milk " +
@@ -97,14 +98,14 @@ namespace Wantoeat.Data.Seeding
             "sauces.",
                 ImagePath = "/images/milk.jpg"
             };
-            var allerge8 = new Allergen
+            var molluscs = new Allergen
             {
                 Name = "Molluscs",
                 Description = "These include mussels, land snails, squid and whelks, but can also be " +
             "commonly found in oyster sauce or as an ingredient in fish stews",
                 ImagePath = "/images/molluscs.jpg"
             };
-            var allergen9 = new Allergen
+            var mustard = new Allergen
             {
                 Name = "Mustard",
                 Description = "Liquid mustard, mustard powder and mustard seeds fall into " +
@@ -112,7 +113,7 @@ namespace Wantoeat.Data.Seeding
             "dressings, sauces and soups.",
                 ImagePath = "/images/mustard.jpg"
             };
-            var allergen10 = new Allergen
+            var nuts = new Allergen
             {
                 Name = "Nuts",
                 Description = "Not to be mistaken with peanuts (which are actually a legume " +
@@ -121,7 +122,7 @@ namespace Wantoeat.Data.Seeding
             "curries), stir-fried dishes, ice cream, marzipan (almond paste), nut oils and sauces.",
                 ImagePath = "/images/nuts.jpg"
             };
-            var allergen11 = new Allergen
+            var peanuts = new Allergen
             {
                 Name = "Peanuts",
                 Description = "Peanuts are actually a legume and grow underground, which " +
@@ -129,7 +130,7 @@ namespace Wantoeat.Data.Seeding
             "curries, desserts, sauces (such as satay sauce), as well as in groundnut oil and peanut flour.",
                 ImagePath = "/images/peanuts.jpg"
             };
-            var allergen12 = new Allergen
+            var sesame = new Allergen
             {
                 Name = "Sesame seeds",
                 Description = "These seeds can often be found in bread (sprinkled on" +
@@ -137,7 +138,7 @@ namespace Wantoeat.Data.Seeding
             " used in salads.",
                 ImagePath = "/images/sesame.jpg"
             };
-            var allergen13 = new Allergen
+            var soya = new Allergen
             {
                 Name = "Soya",
                 Description = "Often found in bean curd, edamame beans, miso paste, textured " +
@@ -145,7 +146,7 @@ namespace Wantoeat.Data.Seeding
                 "desserts, ice cream, meat products, sauces and vegetarian products.",
                 ImagePath = "/images/soya.jpg"
             };
-            var allergen14 = new Allergen
+            var sulphites = new Allergen
             {
                 Name = "Sulphites",
                 Description = "This is an ingredient often used in dried fruit such as " +
@@ -155,7 +156,7 @@ namespace Wantoeat.Data.Seeding
                 ImagePath = "/images/sulphites.jpg"
             };
 
-            var allergens = new List<Allergen> { allerge8, allergen1, allergen2, allergen3, allergen4, allergen5, allergen6, allergen7, allergen9, allergen10, allergen11, allergen12, allergen13, allergen14 };
+            var allergens = new List<Allergen> { molluscs, gluten, egg, fish, crustaceans, celery, lupin, milk, mustard, nuts, peanuts, sesame, soya, sulphites };
 
             await dbContext.Allergens.AddRangeAsync(allergens);
 
@@ -194,7 +195,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Eggs",
                 Description = "Eggs are a very good source of inexpensive, high quality protein. More than half the protein of an egg is found in the egg white along with vitamin B2 and lower amounts of fat than the yolk. Eggs are rich sources of selenium, vitamin D, B6, B12 and minerals minerals such as zinc, iron and copper. Source: www.bbcgoodfood.com.",
                 ImagePath = "/images/Eggs_84302547.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen2 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = egg } }
             };
 
             var aspargus = new Ingredient
@@ -209,7 +210,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Salmon",
                 Description = "Salmon is an excellent source of high-quality protein, vitamins and minerals (including potassium, selenium and vitamin B12) but it is their content of omega-3 fatty acids that receives the most attention, and rightly so. It is this essential fat which is responsible for oily fish’s reputation as a valuable ‘brain food’. Source: www.bbcgoodfood.com",
                             ImagePath = "/images/Salmon_43977193.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen3 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = fish } }
             };
 
             var butter = new Ingredient
@@ -217,7 +218,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Butter",
                 Description = "Butter is produced by separating cream from the milk, then churning the cream to drain off the extra liquid. Butter contains significant amounts of calories and fat, packing over 100 calories and 11 grams of fat into 1 tablespoon (14 grams). Source: www.healthline.com",
                 ImagePath = "/images/Butter_12459611.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen7 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = milk } }
             };
 
             var mayo = new Ingredient
@@ -225,7 +226,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Mayonnaise",
                 Description = "Mayonnaise is a thick, creamy sauce or dressing that is made of oil, egg yolks, lemon juice or vinegar, and seasonings. Since homemade mayonnaise is uncooked, be sure to use the freshest eggs possible, and ones that you are reasonably sure are free from salmonella. Homemade mayonnaise will last three to four days in the refrigerator. Source: www.recipes.howstuffworks.com",
                 ImagePath = "/images/Mayonnaise_98591959.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen2 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = egg } }
             };
 
             var lemon = new Ingredient
@@ -254,7 +255,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Flour",
                 Description = "Description comming soon... Photo source: www.alibaba.com",
                 ImagePath = "/images/Flour_7181840.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen1 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = gluten } }
             };
 
             var yoghurt = new Ingredient
@@ -262,7 +263,7 @@ namespace Wantoeat.Data.Seeding
                 Name = "Yogurt",
                 Description = "Description comming soon... Picture source: www.healthline.com",
                 ImagePath = "/images/Yogurt_54402902.jpg",
-                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = allergen7 } }
+                IngredientAllergens = new List<IngredientAllergen> { new IngredientAllergen { Allergen = milk } }
             };
 
             var pepperoni = new Ingredient
@@ -295,8 +296,8 @@ namespace Wantoeat.Data.Seeding
                  "for just 1 - 2 minutes or until it begins to brown.Turn off the heat and squeeze half a " +
                  "lemon into the dish. Source: www.gimmedelicious.com.",
                 ImagePath = "/images/One pan_40850936.jpg",
-                Category = category9,
-                CookingTime = cookingTime2,
+                Category = fishCategory,
+                CookingTime = cookingTime30,
                 RecipeIngredient = new List<RecipeIngredient>
                     {
                         new RecipeIngredient { Ingredient = aspargus,
@@ -310,8 +311,8 @@ namespace Wantoeat.Data.Seeding
                     },
                 RecipeAllergens = new List<RecipeAllergen>
                     {
-                        new RecipeAllergen { Allergen = allergen3 },
-                        new RecipeAllergen { Allergen = allergen7 },
+                        new RecipeAllergen { Allergen = fish },
+                        new RecipeAllergen { Allergen = milk },
                     }
             };
 
@@ -321,8 +322,8 @@ namespace Wantoeat.Data.Seeding
                 Description = "Pit and peel the avocado, boil hard the eggs and then peel and chop them. Mince parsley, dill or chives. In Medium bowl, add avocados and mash with a spoon until chunky. Add the remaining ingredients and mix with a spoon until creamy. Serve on whole-grain toast or enjoy with toasted pita chips." +
                 "Source: www.gimmedelicious.com.",
                 ImagePath = "/images/Creamy Avocado Egg Salad_9931526.jpg",
-                Category = category5,
-                CookingTime = cookingTime1,
+                Category = vegetarianCategory,
+                CookingTime = cookingTime15,
                 RecipeIngredient = new List<RecipeIngredient>
                     {
                         new RecipeIngredient { Ingredient = eggs,
@@ -336,7 +337,7 @@ namespace Wantoeat.Data.Seeding
                     },
                 RecipeAllergens = new List<RecipeAllergen>
                     {
-                        new RecipeAllergen { Allergen = allergen2 },
+                        new RecipeAllergen { Allergen = egg },
                     }
             };
 
@@ -348,8 +349,8 @@ namespace Wantoeat.Data.Seeding
                 "whisk the eggs.Dip the chicken breasts into the egg mixture then into the parmesan mixture.shake off the excess breading.Repeat until all the chicken cutlets are covered.Heat oil or butter in a large non - stick heavy duty pan.Add chicken cutlets in a single layer and cook for 5 - 6 minutes on each side, until golden and crispy.Be sure not to flip until the parmesan is golden on the first side or it will slide off.Repeat with remaining chicken cutlets."+
                 "Source: www.gimmedelicious.com.",
                 ImagePath = "/images/Crispy Parmesan Crusted Chicken_61277109.jpg",
-                Category = category4,
-                CookingTime = cookingTime1,
+                Category = meatCategory,
+                CookingTime = cookingTime15,
                 RecipeIngredient = new List<RecipeIngredient>
                     {
                         new RecipeIngredient { Ingredient = oliveOil,
@@ -366,8 +367,8 @@ namespace Wantoeat.Data.Seeding
                 "Slice cooled potatoes in half and gently toss with 1 / 4 cup olive oil, 1 / 4 teaspoon salt, and 1 / 2 teaspoon pepper, being sure to coat well.Place potatoes, cut - side down, on a non - stick baking pan and roast in the oven for 15 to 20 minutes, or until golden brown and crispy." +
                 "Source: www.thespruceeats.com",
                 ImagePath = "/images/Oven-Roasted Baby Potatoes_88906866.jpg",
-                Category = category6,
-                CookingTime = cookingTime2,
+                Category = veganCategory,
+                CookingTime = cookingTime30,
                 RecipeIngredient = new List<RecipeIngredient>
                     {
                         new RecipeIngredient { Ingredient = potatoes, 
@@ -386,8 +387,8 @@ namespace Wantoeat.Data.Seeding
                 " sprinkle on a bit more flour. Carefully transfer the dough to a lightly floured baking sheet.Spread the sauce evenly across the dough, sprinkle on the cheese, and top with sliced pepperoni. Bake for 20 minutes, until the cheese has melted and the crust has turned golden - brown." +
                 "Source: www.tasty.co",
                 ImagePath = "/images/2-Ingredient Dough Pizza_17042355.jpg",
-                Category = category3,
-                CookingTime = cookingTime4,
+                Category = pastaCategory,
+                CookingTime = cookingTime1,
                 RecipeIngredient = new List<RecipeIngredient>
                     {
                         new RecipeIngredient { Ingredient = flour,
@@ -401,15 +402,14 @@ namespace Wantoeat.Data.Seeding
                     },
                 RecipeAllergens = new List<RecipeAllergen>
                     {
-                        new RecipeAllergen { Allergen = allergen1 },
-                        new RecipeAllergen { Allergen = allergen7 },
+                        new RecipeAllergen { Allergen = gluten },
+                        new RecipeAllergen { Allergen = milk },
                     }
             };
 
             var recipes = new List<Recipe> { recipe1, recipe2, recipe3, recipe4, recipe5 };
 
             await dbContext.Recipes.AddRangeAsync(recipes);
-
         }
     }
 }

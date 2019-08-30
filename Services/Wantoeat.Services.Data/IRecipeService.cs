@@ -27,6 +27,6 @@
 
         IQueryable<Recipe> GetByCategory(string criteria = null);
 
-        IQueryable<Recipe> GetAllNonContainingAllergen(int[] allergenIds);
+        IQueryable<Recipe> GetAllNonContainingByAllergenId(int[] allergenIds);
     }
 }

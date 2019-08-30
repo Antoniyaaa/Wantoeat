@@ -25,7 +25,6 @@
         {
             var recipe = AutoMapper.Mapper.Map<Recipe>(model);
 
-            // TODO Mapping
             if (model.IngredientQuantities != null)
             {
                 for (int i = 0; i < model.IngredientQuantities.IngredientNames.Count(); i++)
@@ -71,7 +70,6 @@
 
         public async Task<Recipe> EditAsync(RecipeEditInputModel model)
         {
-            // TODO Mapping
             var recipeFromDb = GetById(model.Id);
 
             recipeFromDb.Name = model.Name;
@@ -188,6 +186,19 @@
                 .OrderByDescending(x => x.Count)
                 .Select(x => x.Value);
 
+            // TODO
+            var recipesNew = this.dbContext.RecipeIngredient
+                .Where(x => ingredientIds.Contains(x.IngredientId))
+                .GroupBy(x => x.Recipe).Select(y => new { Value = y.Key, Count = y.Count() })
+                .OrderByDescending(x => x.Count)
+                .Select(x => new
+                {
+                    Name = x.Value,
+                    Count = x.Count,
+                })
+                .ToList();
+
+
             return recipes;
         }
 
@@ -209,7 +220,7 @@
             return this.dbContext.Recipes;
         }
 
-        public IQueryable<Recipe> GetAllNonContainingAllergen(int[] allergenIds)
+        public IQueryable<Recipe> GetAllNonContainingByAllergenId(int[] allergenIds)
         {
             // TODO Refractor
             var allergens = this.dbContext.RecipeAllergen
@@ -218,6 +229,13 @@
                 .ToList();
             var recipes = this.dbContext.Recipes.ToList();
             var result = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).AsQueryable();
+            var result2 = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).ToList();
+
+            var allergesn = this.dbContext.IngredientAllergen
+                .Where(x => allergenIds.Contains(x.AllergenId))
+                .Select(x => x.Ingredient.RecipeIngredients)
+                .ToList();
+            var blq = recipes.Where(x => !allergesn.Any(y => y == x.RecipeIngredient)).ToList();
 
             return result;
         }

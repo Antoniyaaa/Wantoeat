@@ -19,15 +19,12 @@
         private readonly IRecipeService recipeService;
         private readonly IIngredientService ingredientService;
         private readonly IAllergensService allergensService;
-        private readonly ICategoryService categoryService;
 
-        public HomeController(IRecipeService recipeService, IIngredientService ingredientService, IAllergensService allergensService,
-            ICategoryService categoryService)
+        public HomeController(IRecipeService recipeService, IIngredientService ingredientService, IAllergensService allergensService)
         {
             this.recipeService = recipeService;
             this.ingredientService = ingredientService;
             this.allergensService = allergensService;
-            this.categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
@@ -61,7 +58,7 @@
         {
             if (selected.Length > 0)
             {
-                var matchedRecipes = this.recipeService.GetAllNonContainingAllergen(selected);
+                var matchedRecipes = this.recipeService.GetAllNonContainingByAllergenId(selected);
                 var blq = matchedRecipes.To<RecipeSimpleViewModel>().AsEnumerable();
 
                 var searchedAllergens = await this.allergensService.GetAllToViewModelByIds<AllergenSimpleViewModel>(selected).ToListAsync();

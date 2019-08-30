@@ -7,23 +7,24 @@
 <!--TODO Make the button move when scrolling-->
 
 
-<div>
+<div class="text-center">
     <h1 class="display-4">Mark what allergy you want to escape</h1>
 </div>
 <form asp-action="SearchByAllergens" asp-controller="Home" method="get">
-    <div class="row mb-5">
+    <div class="row mt-3 mb-3">
         <div class="mx-auto">
             <input type="submit" name="allergens" class="btn btn-primary" value="Go" />
         </div>
     </div>
+    <hr class="hr-2">
     <div class="row">
         @for (var i = 0; i < @Model.Count(); i++)
         {
-            <div class="col-sm-3">
-                <div class="card">
+            <div class="col-md-2">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <img class="card-img-top" src="@Url.Content(Model[i].ImagePath)">
-                        <div class="card-body">
+                        <img class="card-img-top" style="height:120px" src="@Url.Content(Model[i].ImagePath)">
+                        <div class="card-footer text-center bg-white" style="height:10px">
                             <div class="form-check form-check-inline">
                                 <input class="form-check" type="checkbox" name="selected" value="@Model[i].Id">
                             </div>
