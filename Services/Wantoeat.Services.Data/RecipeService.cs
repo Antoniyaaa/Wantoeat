@@ -27,6 +27,11 @@
 
             if (model.IngredientQuantities != null)
             {
+                if (model.IngredientQuantities.IngredientNames.Count() != model.IngredientQuantities.RecipeIngredientQuantity.Count())
+                {
+                    throw new ArgumentNullException();
+                }
+
                 for (int i = 0; i < model.IngredientQuantities.IngredientNames.Count(); i++)
                 {
                     var ingredient = this.dbContext.Ingredients.FirstOrDefault(x => x.Name == model.IngredientQuantities.IngredientNames[i]);

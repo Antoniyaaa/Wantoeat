@@ -11,6 +11,7 @@
     using Wantoeat.Services.Mapping;
     using Wantoeat.Services.Data.Tests.Common;
     using Wantoeat.Web.ViewModels.Recipes;
+    using System;
 
     public class RecipesServiceTests
     {
@@ -71,6 +72,122 @@
         {
             context.AddRange(GetRecipes());
             await context.SaveChangesAsync();
+        }
+
+        [Fact]
+        public async Task Create_FromViewModel_ShouldBeSuccessful()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            var service = new RecipeService(dbContext);
+
+            var recipeVM = new RecipeCreateInputModel
+            {
+                Name = "Recipe",
+            };
+
+            Recipe recipe = await service.CreateAsync(recipeVM);
+            var result = dbContext.Recipes.First();
+
+
+            Assert.True(recipe == result);
+        }
+
+        [Fact]
+        public async Task Create_FromViewModel_ShouldReturnRightType()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            var service = new RecipeService(dbContext);
+
+            var recipeVM = new RecipeCreateInputModel
+            {
+                Name = "Recipe",
+            };
+
+            Recipe actual = await service.CreateAsync(recipeVM);
+
+            Assert.IsType<Recipe>(actual);
+        }
+
+        [Fact]
+        public async Task Create_WithNonExistingIngredients_ShouldSaveTheRecipeWithoutAnyIngreidents()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            var service = new RecipeService(dbContext);
+
+            var recipeVM = new RecipeCreateInputModel
+            {
+                Name = "Recipe",
+                IngredientQuantities = new IngredientQuantities
+                {
+                    IngredientNames = new List<string> { "Test", "Test2"},
+                    RecipeIngredientQuantity = new List<string> { "quantity", "quantity2"}
+                }
+            };
+
+            Recipe actual = await service.CreateAsync(recipeVM);
+
+            Assert.Empty(actual.RecipeIngredient);
+        }
+
+        [Fact]
+        public async Task Create_WithIngredientWithAllergens_ShouldAssignAllergensToRecipe()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+
+            var service = new RecipeService(dbContext);
+
+            var ingredient = new Ingredient
+            {
+                Name = "Test",
+                IngredientAllergens = new List<IngredientAllergen>
+                {
+                    new IngredientAllergen { Allergen = new Allergen { Name = "TestAllergen"}
+                } }
+            };
+            dbContext.Ingredients.Add(ingredient);
+            await dbContext.SaveChangesAsync();
+
+            var recipeVM = new RecipeCreateInputModel
+            {
+                Name = "Recipe",
+                IngredientQuantities = new IngredientQuantities
+                {
+                    IngredientNames = new List<string> { "Test", "Test2" },
+                    RecipeIngredientQuantity = new List<string> { "3", "5"}
+                }
+            };
+
+            Recipe actual = await service.CreateAsync(recipeVM);
+
+            Assert.NotEmpty(actual.RecipeAllergens);
+        }
+
+        [Fact]
+        public async Task Create_WithIngredientsWithIncorrectQuantities_ShouldThrowException()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+
+            var service = new RecipeService(dbContext);
+
+            var ingredients = new List<Ingredient>
+            {
+                new Ingredient { Name = "Test" },
+                new Ingredient { Name = "Test2" }
+            };
+            dbContext.Ingredients.AddRange(ingredients);
+            await dbContext.SaveChangesAsync();
+
+            var recipeVM = new RecipeCreateInputModel
+            {
+                Name = "Recipe",
+                IngredientQuantities = new IngredientQuantities
+                {
+                    IngredientNames = new List<string> { "Test", "Test2" },
+                    RecipeIngredientQuantity = new List<string> { "3" }
+                }
+            };
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.CreateAsync(recipeVM));
         }
 
         [Fact]
@@ -170,8 +287,6 @@
             var service = new RecipeService(dbContext);
 
             var result = service.GetGroupsByCategories();
-
-            RecipeSimpleWithCategoryViewModel expectedVM = dbContext.Recipes.First().To<RecipeSimpleWithCategoryViewModel>();
 
             Assert.IsType<RecipeSimpleWithCategoryViewModel>(result.First().Recipes.First());
         }
