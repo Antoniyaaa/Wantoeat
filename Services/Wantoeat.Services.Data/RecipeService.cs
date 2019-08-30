@@ -149,6 +149,20 @@
         {
             var recipes = this.dbContext.Recipes.To<RecipeSimpleWithCategoryViewModel>();
 
+            if (!this.dbContext.Categories.Any())
+            {
+                var recipesWhenNoCategory = new RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>
+                {
+                    GroupName = "Common category",
+                    Recipes = recipes.ToList()
+                };
+
+                var allRecipesInOneCategory = new List<RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>>();
+                allRecipesInOneCategory.Add(recipesWhenNoCategory);
+
+                return allRecipesInOneCategory;
+            }
+
             var recipesCategories = recipes.GroupBy(x => x.CategoryName)
                                     .Select(g => 
                                     new RecipesInGroupsViewModel<string, List<RecipeSimpleWithCategoryViewModel>>
@@ -178,7 +192,7 @@
             return recipe;
         }
 
-        public IQueryable<Recipe> GetRecipesByIngredients(int[] ingredientIds)
+        public IQueryable<Recipe> GetRecipesByMatchingIngredients(int[] ingredientIds)
         {
             var recipes = this.dbContext.RecipeIngredient
                 .Where(x => ingredientIds.Contains(x.IngredientId))
@@ -186,7 +200,7 @@
                 .OrderByDescending(x => x.Count)
                 .Select(x => x.Value);
 
-            // TODO
+            // TODO Show the Count of Matches
             var recipesNew = this.dbContext.RecipeIngredient
                 .Where(x => ingredientIds.Contains(x.IngredientId))
                 .GroupBy(x => x.Recipe).Select(y => new { Value = y.Key, Count = y.Count() })
@@ -197,7 +211,6 @@
                     Count = x.Count,
                 })
                 .ToList();
-
 
             return recipes;
         }
@@ -222,20 +235,14 @@
 
         public IQueryable<Recipe> GetAllNonContainingByAllergenId(int[] allergenIds)
         {
-            // TODO Refractor
-            var allergens = this.dbContext.RecipeAllergen
+            var recipesWithallergens = this.dbContext.RecipeAllergen
                 .Where(x => allergenIds.Contains(x.AllergenId))
                 .Select(x => x.Recipe)
                 .ToList();
-            var recipes = this.dbContext.Recipes.ToList();
-            var result = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).AsQueryable();
-            var result2 = recipes.Where(x => !allergens.Any(y => y.Id == x.Id)).ToList();
 
-            var allergesn = this.dbContext.IngredientAllergen
-                .Where(x => allergenIds.Contains(x.AllergenId))
-                .Select(x => x.Ingredient.RecipeIngredients)
-                .ToList();
-            var blq = recipes.Where(x => !allergesn.Any(y => y == x.RecipeIngredient)).ToList();
+            var allRecipes = this.dbContext.Recipes.ToList();
+
+            var result = allRecipes.Where(x => !recipesWithallergens.Any(y => y.Id == x.Id)).AsQueryable();
 
             return result;
         }

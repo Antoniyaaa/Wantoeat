@@ -38,7 +38,7 @@
         {
             if (selected.Length > 0)
             {
-                var matchedRecipes = await this.recipeService.GetRecipesByIngredients(selected).To<RecipeSimpleViewModel>().ToListAsync();
+                var matchedRecipes = await this.recipeService.GetRecipesByMatchingIngredients(selected).To<RecipeSimpleViewModel>().ToListAsync();
 
                 var searchedIngredients = await this.ingredientService.GetAllToViewModelByIds<RecipeCreateIngredientViewModel>(selected).ToListAsync();
 

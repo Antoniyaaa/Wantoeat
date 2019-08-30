@@ -23,7 +23,7 @@
 
         Task<TViewModel> GetViewModelByIdAsync<TViewModel>(int id);
 
-        IQueryable<Recipe> GetRecipesByIngredients(int[] ingredientIds);
+        IQueryable<Recipe> GetRecipesByMatchingIngredients(int[] ingredientIds);
 
         IQueryable<Recipe> GetByCategory(string criteria = null);
 

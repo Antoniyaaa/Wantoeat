@@ -93,7 +93,6 @@
             Assert.IsType<Ingredient>(actual);
         }
 
-
         [Fact]
         public async Task Create_WithExistingAllergens_ShouldCreateAlsoRelationToAllergens()
         {

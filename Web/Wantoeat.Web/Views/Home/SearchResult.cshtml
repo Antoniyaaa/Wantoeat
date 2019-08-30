@@ -9,30 +9,37 @@
 </div>
 
 @{
-    @if (Model.Ingredients.Count() != 0)
+    if (Model.Recipes.Count() == 0)
     {
-        <p>Your ingredients:</p>
-        <ul>
-            @foreach (var item in @Model.Ingredients)
-            {
-            <li>@item.Name</li>
-            }
-        </ul>
+        <p>There are no recipes matching your request.</p>
     }
     else
     {
-        <h6>
-            Allergens to avoid:
-            @foreach (var item in @Model.Allergens)
-            {
-                <p>@item.Name</p>
-            }
-        </h6>
-    }
+        if (Model.Ingredients.Count() != 0)
+        {
+            <p>Your ingredients:</p>
+            <ul>
+                @foreach (var item in @Model.Ingredients)
+                {
+                    <li>@item.Name</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <h6>
+                Allergens to avoid:
+                @foreach (var item in @Model.Allergens)
+                {
+                    <p>@item.Name</p>
+                }
+            </h6>
+        }
 
+    }
 }
 
 <div class="row">
-        @Html.DisplayFor(x => x.Recipes)
+    @Html.DisplayFor(x => x.Recipes)
 </div>
 
