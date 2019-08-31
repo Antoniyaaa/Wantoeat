@@ -72,7 +72,7 @@
 
                     if (allergen == null)
                     {
-                        continue;
+                        return null;
                     }
 
                     IngredientAllergen ingredientAllergen = new IngredientAllergen

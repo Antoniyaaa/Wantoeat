@@ -85,17 +85,6 @@
         }
 
         [Fact]
-        public async Task GetAllToViewModelShouldReturnNullWhenEmptydB()
-        {
-            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
-
-            var service = new AllergensService(dbContext);
-            List<AllergenViewModel> actual = service.GetAllToViewModel<AllergenViewModel>().ToList();
-
-            Assert.True(actual.Count() == 0);
-        }
-
-        [Fact]
         public async Task GetAllToViewModelShouldReturnCorrectListWithVM()
         {
             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();

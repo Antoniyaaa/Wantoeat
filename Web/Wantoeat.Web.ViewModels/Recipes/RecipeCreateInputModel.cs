@@ -6,8 +6,6 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    using AutoMapper;
-
     using Wantoeat.Data.Models;
     using Wantoeat.Services.Mapping;
     using Wantoeat.Web.ViewModels.ValidationAttributes;
@@ -28,7 +26,7 @@
         public int CookingTimeId { get; set; }
         public ICollection<SelectListItem> CookingTimes { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ingredients and Quantity fields are required.")]
         public IngredientQuantities IngredientQuantities { get; set; }
 
         public string ImagePath { get; set; }
@@ -48,7 +46,8 @@
 
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            if (this.IngredientNames.Count != this.RecipeIngredientQuantity.Count)
+            if (this.IngredientNames == null || this.RecipeIngredientQuantity == null ||
+                this.IngredientNames.Count != this.RecipeIngredientQuantity.Count)
             {
                 yield return new ValidationResult("Ingredients count and quantities count must be equal.");
             }

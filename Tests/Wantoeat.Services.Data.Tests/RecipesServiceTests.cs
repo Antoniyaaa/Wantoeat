@@ -1,17 +1,16 @@
 ﻿namespace Wantoeat.Services.Data.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Xunit;
-
     using Wantoeat.Data;
     using Wantoeat.Data.Models;
-    using Wantoeat.Services.Mapping;
     using Wantoeat.Services.Data.Tests.Common;
     using Wantoeat.Web.ViewModels.Recipes;
-    using System;
+
+    using Xunit;
 
     public class RecipesServiceTests
     {
@@ -75,41 +74,39 @@
         }
 
         [Fact]
-        public async Task Create_FromViewModel_ShouldBeSuccessful()
+        public async Task Create_WithCorrectData__ShouldBeSuccessful()
         {
             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
             var service = new RecipeService(dbContext);
 
+            var category = new Category { Name = "Vegan" };
+            var cookingTime = new CookingTime { Name = "15 min." };
+            var ingredient = new Ingredient { Name = "Leafs" };
+            dbContext.Categories.Add(category);
+            dbContext.CookingTimes.Add(cookingTime);
+            dbContext.Ingredients.Add(ingredient);
+            await dbContext.SaveChangesAsync();
+
             var recipeVM = new RecipeCreateInputModel
             {
                 Name = "Recipe",
+                CategoryId = category.Id,
+                CookingTimeId = cookingTime.Id,
+                IngredientQuantities = new IngredientQuantities
+                {
+                    
+                     IngredientNames = new List<string> { "Leafs" },
+                     RecipeIngredientQuantity = new List<string> { "3 pcs." },
+                }
             };
 
             Recipe recipe = await service.CreateAsync(recipeVM);
-            var result = dbContext.Recipes.First();
 
-
-            Assert.True(recipe == result);
+            Assert.NotNull(recipe);
         }
 
         [Fact]
-        public async Task Create_FromViewModel_ShouldReturnRightType()
-        {
-            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
-            var service = new RecipeService(dbContext);
-
-            var recipeVM = new RecipeCreateInputModel
-            {
-                Name = "Recipe",
-            };
-
-            Recipe actual = await service.CreateAsync(recipeVM);
-
-            Assert.IsType<Recipe>(actual);
-        }
-
-        [Fact]
-        public async Task Create_WithNonExistingIngredients_ShouldSaveTheRecipeWithoutAnyIngreidents()
+        public async Task Create_WithIncompleteData_ShouldReturnNull()
         {
             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
             var service = new RecipeService(dbContext);
@@ -126,7 +123,7 @@
 
             Recipe actual = await service.CreateAsync(recipeVM);
 
-            Assert.Empty(actual.RecipeIngredient);
+            Assert.Null(actual);
         }
 
         [Fact]
@@ -135,6 +132,11 @@
             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
 
             var service = new RecipeService(dbContext);
+
+            var category = new Category { Name = "Vegan" };
+            var cookingTime = new CookingTime { Name = "15 min." };
+            dbContext.Categories.Add(category);
+            dbContext.CookingTimes.Add(cookingTime);
 
             var ingredient = new Ingredient
             {
@@ -150,10 +152,12 @@
             var recipeVM = new RecipeCreateInputModel
             {
                 Name = "Recipe",
+                CategoryId = category.Id,
+                CookingTimeId = cookingTime.Id,
                 IngredientQuantities = new IngredientQuantities
                 {
-                    IngredientNames = new List<string> { "Test", "Test2" },
-                    RecipeIngredientQuantity = new List<string> { "3", "5"}
+                    IngredientNames = new List<string> { "Test"},
+                    RecipeIngredientQuantity = new List<string> { "3"}
                 }
             };
 
@@ -169,6 +173,11 @@
 
             var service = new RecipeService(dbContext);
 
+            var category = new Category { Name = "Vegan" };
+            var cookingTime = new CookingTime { Name = "15 min." };
+            dbContext.Categories.Add(category);
+            dbContext.CookingTimes.Add(cookingTime);
+
             var ingredients = new List<Ingredient>
             {
                 new Ingredient { Name = "Test" },
@@ -180,6 +189,8 @@
             var recipeVM = new RecipeCreateInputModel
             {
                 Name = "Recipe",
+                CategoryId = category.Id,
+                CookingTimeId = cookingTime.Id,
                 IngredientQuantities = new IngredientQuantities
                 {
                     IngredientNames = new List<string> { "Test", "Test2" },
@@ -188,6 +199,32 @@
             };
 
             await Assert.ThrowsAsync<ArgumentNullException>(() => service.CreateAsync(recipeVM));
+        }
+
+        [Fact]
+        public  async Task Edit_WithQuantityNull_ShouldDeleteTheIngredientFromRecipe()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            await SeedData(dbContext);
+
+            var recipe = dbContext.Recipes.First();
+
+            var viewModel = new RecipeEditInputModel
+            {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                CookingTimeName = recipe.CookingTime.Name,
+                CategoryName = recipe.Category.Name,
+                IngredientNames = new List<string> { "Eggs", "Mayo", "Avocado" },
+                Quantity = new List<string> { "3 pcs.", null, "3 pcs." },
+            };
+
+            var recipeIngredient = recipe.RecipeIngredient.Where(x => x.Ingredient.Name == "Mayo").First();
+
+            var service = new RecipeService(dbContext);
+            var actual = await service.EditAsync(viewModel);
+
+            Assert.DoesNotContain(recipeIngredient, actual.RecipeIngredient);
         }
 
         [Fact]

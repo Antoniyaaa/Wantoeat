@@ -37,6 +37,9 @@
         [Display(Name = "Current image")]
         public string ImagePath { get; set; }
 
+        public IngredientQuantities IngredientQuantities { get; set; }
+
+
         [Display(Name = "Upload new Image")]
         [ImageValidationAttribute(ErrorMessage = "Allowed extensions: jpg, jpeg, png, bmp.")]
         public IFormFile NewImageFile { get; set; }

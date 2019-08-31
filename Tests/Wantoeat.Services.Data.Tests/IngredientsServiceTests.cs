@@ -120,7 +120,7 @@
         }
 
         [Fact]
-        public async Task Create_WithExistingAndNonExistingAllergens_ShouldBeSucessfullForTheExistingAllergens()
+        public async Task Create_WithExistingAndNonExistingAllergens_ShouldReturnNull()
         {
             var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
             var service = new IngredientsService(dbContext);
@@ -140,7 +140,7 @@
 
             var actual = await service.CreateAsync(ingredientVM);
 
-            Assert.True(actual.IngredientAllergens.Count == 1);
+            Assert.True(actual == null);
         }
 
         [Fact]
@@ -323,5 +323,45 @@
 
             Assert.True(countAfterEdit == (countBeforeEdit + 1));
         }
+
+        [Fact]
+        public async Task GetAllToViewModelShouldReturnCorrectNumber()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            await SeedData(dbContext);
+            var expected = dbContext.Ingredients.Count();
+
+            var service = new IngredientsService(dbContext);
+            var actual = service.GetAllToViewModel<IngredientSimpleViewModel>().ToList();
+
+            Assert.True(expected == actual.Count());
+        }
+
+        [Fact]
+        public async Task GetAllToViewModelShouldReturnCorrectListWithVM()
+        {
+            var dbContext = WantoeatDbContextInMemoryFactory.InitializeContext();
+            await SeedData(dbContext);
+
+            var expected = new List<IngredientSimpleViewModel>
+            {
+                new IngredientSimpleViewModel { Name = "Flour"},
+                new IngredientSimpleViewModel { Name = "Tomatoes"},
+                new IngredientSimpleViewModel { Name = "Pepperoni"},
+                new IngredientSimpleViewModel { Name = "Parmesan"},
+            };
+
+            var service = new IngredientsService(dbContext);
+            var actual = service.GetAllToViewModel<IngredientSimpleViewModel>().ToList();
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                var expectedEntry = expected[i];
+                var actualEntry = actual[i];
+
+                Assert.True(expectedEntry.Name == actualEntry.Name);
+            }
+        }
+
     }
 }
