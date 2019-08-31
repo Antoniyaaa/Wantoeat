@@ -82,6 +82,7 @@
             var category = new Category { Name = "Vegan" };
             var cookingTime = new CookingTime { Name = "15 min." };
             var ingredient = new Ingredient { Name = "Leafs" };
+
             dbContext.Categories.Add(category);
             dbContext.CookingTimes.Add(cookingTime);
             dbContext.Ingredients.Add(ingredient);

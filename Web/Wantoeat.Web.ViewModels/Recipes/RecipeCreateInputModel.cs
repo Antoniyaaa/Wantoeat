@@ -20,10 +20,12 @@
 
         [Display(Name = "Choose Category")]
         public int CategoryId { get; set; }
+
         public ICollection<SelectListItem> Categories { get; set; }
 
         [Display(Name = "Choose Cooking time")]
         public int CookingTimeId { get; set; }
+
         public ICollection<SelectListItem> CookingTimes { get; set; }
 
         [Required(ErrorMessage = "Ingredients and Quantity fields are required.")]

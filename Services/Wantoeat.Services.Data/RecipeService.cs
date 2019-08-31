@@ -219,16 +219,6 @@
                 .Select(x => x.Value);
 
             // TODO Show the Count of Matches
-            var recipesNew = this.dbContext.RecipeIngredient
-                .Where(x => ingredientIds.Contains(x.IngredientId))
-                .GroupBy(x => x.Recipe).Select(y => new { Value = y.Key, Count = y.Count() })
-                .OrderByDescending(x => x.Count)
-                .Select(x => new
-                {
-                    Name = x.Value,
-                    Count = x.Count,
-                })
-                .ToList();
 
             return recipes;
         }

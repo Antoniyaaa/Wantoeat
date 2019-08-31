@@ -47,7 +47,7 @@
             var ingredient = this.dbContext.Ingredients
                             .FirstOrDefault(x => x.Id == id);
 
-             if (ingredient == null)
+            if (ingredient == null)
              {
                  return false;
              }

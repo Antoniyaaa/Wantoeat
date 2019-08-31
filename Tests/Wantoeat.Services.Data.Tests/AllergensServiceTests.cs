@@ -22,7 +22,6 @@
             MapperInitializer.InitializeMapper();
         }
 
-        // GetVMById
         [Fact]
         public async Task GetViewModelByIdShouldReturnCorrectId()
         {
@@ -67,7 +66,6 @@
             Assert.True(actual == null);
         }
 
-        // GetAllToVM
         [Fact]
         public async Task GetAllToViewModelShouldReturnCorrectNumber()
         {
@@ -98,7 +96,6 @@
                 new AllergenSimpleViewModel { Id = 2, Name = "Second", ImagePath = "www" },
             };
 
-
             var service = new AllergensService(dbContext);
             List<AllergenSimpleViewModel> actual = service.GetAllToViewModel<AllergenSimpleViewModel>().ToList();
 
@@ -112,7 +109,6 @@
             }
         }
 
-        // GetAllToSelectListItem
         [Fact]
         public async Task GetAllToSelectListItemShouldReturnCorrectNumber()
         {
@@ -153,7 +149,6 @@
                 new SelectListItem { Value = "1", Text = FirstName },
                 new SelectListItem { Value = "2", Text = SecondName },
             };
-
 
             var service = new AllergensService(dbContext);
             List<SelectListItem> actual = service.AllToSelectListItems().ToList();

@@ -127,26 +127,6 @@
                 return this.View(model);
             }
 
-            if (model.IngredientNames.Count() != model.Quantity.Count())
-            {
-                var unusedIngredients = await this.ingredientService.GetAllUnused(model.Id).ToListAsync();
-
-                this.ViewData["ingredients"] = unusedIngredients.Select(ingredient => new RecipeCreateIngredientViewModel
-                {
-                    Name = ingredient.Name
-
-                }).OrderBy(x => x.Name)
-                .ToList();
-
-                var allCookingTimes = await this.cookingTimeService.GetAll().ToListAsync();
-                this.ViewData["cookingTimes"] = allCookingTimes.Select(item => item.Name).ToList();
-
-                var allCategories = await this.categoryService.GetAll().ToListAsync();
-                this.ViewData["categories"] = allCategories.Select(item => item.Name).ToList();
-
-                return this.View(model);
-            }
-
             if (model.NewImageFile != null && model.NewImageFile.Length != 0)
             {
                 model.ImagePath = this.imageService.UploadImage(model.NewImageFile, model.Name);

@@ -109,9 +109,9 @@
                     <div>
                         <input type="button" class="add" value="Add" />
                         <input type="button" class="remove" value="Remove" />
-                        <div id="new_chq">
+                        <div id="new_field">
                         </div>
-                        <input type="hidden" value="1" id="total_chq">
+                        <input type="hidden" value="1" id="total_field">
                         <span asp-validation-for="IngredientQuantities" class="text-danger"></span>
                     </div>
                 </div>
@@ -136,20 +136,20 @@
     $('.remove').on('click', remove);
 
     function add() {
-        var new_chq_no = parseInt($('#total_chq').val()) + 1;
-        var new_input = "<input style='height:20px' type='text' name='IngredientQuantities.RecipeIngredientQuantity' id='new_" + new_chq_no + "'><br />";
+        var new_field_no = parseInt($('#total_field').val()) + 1;
+        var new_input = "<input style='height:20px' type='text' name='IngredientQuantities.RecipeIngredientQuantity' id='new_" + new_field_no + "'><br />";
 
-        $('#new_chq').append(new_input);
+        $('#new_field').append(new_input);
 
-        $('#total_chq').val(new_chq_no);
+        $('#total_field').val(new_field_no);
     }
 
     function remove() {
-        var last_chq_no = $('#total_chq').val();
+        var last_field_no = $('#total_field').val();
 
-        if (last_chq_no > 1) {
-            $('#new_' + last_chq_no).remove();
-            $('#total_chq').val(last_chq_no - 1);
+        if (last_field_no > 1) {
+            $('#new_' + last_field_no).remove();
+            $('#total_field').val(last_field_no - 1);
         }
     }
 </script>
