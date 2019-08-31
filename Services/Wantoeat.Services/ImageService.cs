@@ -15,7 +15,6 @@
             this.hostingEnvironment = hostingEnvironment;
         }
 
-        // TODO Дали не трябва да записвам path-a след създаването на продукта?!...Ако нещо фейлне, да не се записва файла
         public string UploadImage(IFormFile imageFile, string entityName)
         {
             var fileInfo = new FileInfo(imageFile.FileName);
@@ -35,14 +34,8 @@
             return imagePath;
         }
 
-        // TODO Дали не трябва да записвам fail-a след edit-ването на продукта?!...Ако нещо фейлне, да не се записва файла
         public string ReplaceImage(IFormFile imageFile, string filePath, string entityName)
         {
-            if (filePath == null)
-            {
-                return this.UploadImage(imageFile, entityName);
-            }
-
             var webPath = this.hostingEnvironment.WebRootPath;
             var fullPath = Path.Combine(webPath + filePath);
             File.Delete(fullPath);

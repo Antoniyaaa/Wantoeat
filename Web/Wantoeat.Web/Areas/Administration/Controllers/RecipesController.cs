@@ -129,7 +129,14 @@
 
             if (model.NewImageFile != null && model.NewImageFile.Length != 0)
             {
-                model.ImagePath = this.imageService.UploadImage(model.NewImageFile, model.Name);
+                if (model.ImagePath != null)
+                {
+                    model.ImagePath = this.imageService.ReplaceImage(model.NewImageFile, model.ImagePath, model.Name);
+                }
+                else
+                {
+                    model.ImagePath = this.imageService.UploadImage(model.NewImageFile, model.Name);
+                }
             }
 
             var recipe = await this.recipeService.EditAsync(model);
